@@ -34,7 +34,7 @@ export const tourPackages: TourPackage[] = [
       },
     },
     priceBDT: 8500,
-    coverImage: '/src/assets/images/hero_sajek_sunrise_1791788922427.jpg',
+    coverImage: '/src/assets/images/hero_sajek_sunrise_1791788897775.jpg',
     // Fallback or gallery array
     galleryImages: [
       '/src/assets/images/hero_sajek_sunrise_1791788897775.jpg',
