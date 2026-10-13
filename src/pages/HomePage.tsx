@@ -197,50 +197,50 @@ export const HomePage: React.FC = () => {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <div className="bg-white rounded-xl p-6 border border-stone-200/90 shadow-xs">
-              <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center mb-4">
-                <UserCheck className="w-6 h-6" />
+            <div className="bg-white rounded-2xl p-7 border border-stone-200/90 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="w-13 h-13 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center mb-5 shadow-xs">
+                <UserCheck className="w-7 h-7" />
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-stone-900 mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-stone-900 mb-2.5">
                 {t.whyChooseUs.item1Title}
               </h3>
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+              <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
                 {t.whyChooseUs.item1Desc}
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-stone-200/90 shadow-xs">
-              <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center mb-4">
-                <ShieldCheck className="w-6 h-6" />
+            <div className="bg-white rounded-2xl p-7 border border-stone-200/90 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="w-13 h-13 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center mb-5 shadow-xs">
+                <ShieldCheck className="w-7 h-7" />
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-stone-900 mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-stone-900 mb-2.5">
                 {t.whyChooseUs.item2Title}
               </h3>
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+              <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
                 {t.whyChooseUs.item2Desc}
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-stone-200/90 shadow-xs">
-              <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center mb-4">
-                <Compass className="w-6 h-6" />
+            <div className="bg-white rounded-2xl p-7 border border-stone-200/90 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="w-13 h-13 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center mb-5 shadow-xs">
+                <Compass className="w-7 h-7" />
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-stone-900 mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-stone-900 mb-2.5">
                 {t.whyChooseUs.item3Title}
               </h3>
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+              <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
                 {t.whyChooseUs.item3Desc}
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-stone-200/90 shadow-xs">
-              <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center mb-4">
-                <MessageCircle className="w-6 h-6" />
+            <div className="bg-white rounded-2xl p-7 border border-stone-200/90 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="w-13 h-13 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center mb-5 shadow-xs">
+                <MessageCircle className="w-7 h-7" />
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-stone-900 mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-stone-900 mb-2.5">
                 {t.whyChooseUs.item4Title}
               </h3>
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+              <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
                 {t.whyChooseUs.item4Desc}
               </p>
             </div>
@@ -257,38 +257,38 @@ export const HomePage: React.FC = () => {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          <div className="bg-white rounded-xl p-7 border border-stone-200/90 shadow-xs relative">
-            <span className="text-3xl font-bold font-mono text-emerald-800/25 mb-4 block">
+          <div className="bg-white rounded-2xl p-8 border border-stone-200/90 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative">
+            <span className="text-4xl font-extrabold font-mono text-emerald-800/30 mb-4 block">
               {t.howItWorks.step1Number}
             </span>
-            <h3 className="text-lg font-bold text-stone-900 mb-2">
+            <h3 className="text-xl font-bold text-stone-900 mb-2.5">
               {t.howItWorks.step1Title}
             </h3>
-            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
               {t.howItWorks.step1Desc}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl p-7 border border-stone-200/90 shadow-xs relative">
-            <span className="text-3xl font-bold font-mono text-emerald-800/25 mb-4 block">
+          <div className="bg-white rounded-2xl p-8 border border-stone-200/90 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative">
+            <span className="text-4xl font-extrabold font-mono text-emerald-800/30 mb-4 block">
               {t.howItWorks.step2Number}
             </span>
-            <h3 className="text-lg font-bold text-stone-900 mb-2">
+            <h3 className="text-xl font-bold text-stone-900 mb-2.5">
               {t.howItWorks.step2Title}
             </h3>
-            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
               {t.howItWorks.step2Desc}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl p-7 border border-stone-200/90 shadow-xs relative">
-            <span className="text-3xl font-bold font-mono text-emerald-800/25 mb-4 block">
+          <div className="bg-white rounded-2xl p-8 border border-stone-200/90 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative">
+            <span className="text-4xl font-extrabold font-mono text-emerald-800/30 mb-4 block">
               {t.howItWorks.step3Number}
             </span>
-            <h3 className="text-lg font-bold text-stone-900 mb-2">
+            <h3 className="text-xl font-bold text-stone-900 mb-2.5">
               {t.howItWorks.step3Title}
             </h3>
-            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+            <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
               {t.howItWorks.step3Desc}
             </p>
           </div>

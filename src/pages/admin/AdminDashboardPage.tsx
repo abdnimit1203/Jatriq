@@ -27,6 +27,7 @@ import {
   AlertTriangle,
   FileDown,
 } from 'lucide-react';
+import { Logo } from '../../components/Logo';
 
 export const AdminDashboardPage: React.FC = () => {
   const { logout } = useAdminAuth();
@@ -137,14 +138,15 @@ export const AdminDashboardPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-stone-100/80 text-stone-900 pb-16">
       {/* Top Bar for Admin */}
-      <header className="bg-white border-b border-stone-200 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <header className="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="font-serif italic font-extrabold text-emerald-800 text-2xl">J</span>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-base text-stone-900">{config.agencyName}</span>
-              <span className="bg-stone-100 text-stone-600 border border-stone-200 text-[10px] uppercase font-mono px-2 py-0.5 rounded font-semibold">
-                Demo Admin
+            <Link to="/" className="hover:opacity-90 transition-opacity">
+              <Logo size="sm" variant="dark" showTagline={false} />
+            </Link>
+            <div className="hidden sm:flex items-center gap-2 border-l border-stone-200 pl-3">
+              <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs uppercase font-mono px-2 py-0.5 rounded-md font-bold">
+                Admin Panel (Demo)
               </span>
             </div>
           </div>

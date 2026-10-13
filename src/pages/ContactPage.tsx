@@ -63,8 +63,8 @@ export const ContactPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mt-10">
         {/* Contact Information & Channels */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white rounded-xl border border-stone-200/90 p-6 sm:p-8 shadow-xs space-y-6">
-            <h2 className="text-lg font-bold text-stone-900 border-b border-stone-100 pb-3">
+          <div className="bg-white rounded-2xl border border-stone-200/90 p-6 sm:p-8 shadow-lg shadow-stone-200/60 space-y-6">
+            <h2 className="text-xl font-bold text-stone-900 border-b border-stone-100 pb-3">
               {t.contactPage.directContactsTitle}
             </h2>
 
@@ -158,16 +158,16 @@ export const ContactPage: React.FC = () => {
         </div>
 
         {/* Message Form */}
-        <div className="lg:col-span-7 bg-white rounded-xl border border-stone-200/90 p-6 sm:p-8 shadow-xs">
+        <div className="lg:col-span-7 bg-white rounded-2xl border border-stone-200/90 p-6 sm:p-9 shadow-lg sm:shadow-xl shadow-stone-200/60">
           {submitted ? (
             <div className="text-center py-10">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 text-emerald-800 mb-4">
-                <CheckCircle2 className="w-8 h-8" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 mb-4 shadow-xs">
+                <CheckCircle2 className="w-9 h-9" />
               </div>
               <h3 className="text-2xl font-bold text-stone-900 mb-2">
                 {t.contactPage.successTitle}
               </h3>
-              <p className="text-stone-600 text-sm max-w-md mx-auto mb-6">
+              <p className="text-stone-600 text-base max-w-md mx-auto mb-6">
                 {t.contactPage.successMessage}
               </p>
               <button
@@ -182,25 +182,25 @@ export const ContactPage: React.FC = () => {
                     message: '',
                   });
                 }}
-                className="px-5 py-2.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 text-sm font-semibold transition-colors"
+                className="px-6 py-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-base font-bold transition-colors cursor-pointer"
               >
                 {language === 'bn' ? 'আরেকটি বার্তা পাঠান' : 'Send Another Message'}
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-5">
               <div>
-                <h2 className="text-xl font-bold text-stone-900">
+                <h2 className="text-2xl font-bold text-stone-900">
                   {t.contactPage.formTitle}
                 </h2>
-                <p className="text-xs sm:text-sm text-stone-500 mt-1">
+                <p className="text-sm text-stone-500 mt-1">
                   {t.contactPage.formSubtitle}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div>
-                  <label htmlFor="contact-name" className="block text-xs font-semibold text-stone-700 uppercase tracking-wide mb-1">
+                  <label htmlFor="contact-name" className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5 font-mono">
                     {t.contactPage.name} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -211,17 +211,17 @@ export const ContactPage: React.FC = () => {
                       setContactForm({ ...contactForm, name: e.target.value });
                       if (formErrors.name) setFormErrors({ ...formErrors, name: '' });
                     }}
-                    className={`w-full py-2.5 px-3 text-sm rounded-lg bg-stone-50 border ${
-                      formErrors.name ? 'border-red-400 bg-red-50/30' : 'border-stone-200 focus:bg-white focus:border-emerald-700'
-                    }`}
+                    className={`w-full py-3 px-4 text-base rounded-xl bg-stone-50 border ${
+                      formErrors.name ? 'border-red-400 bg-red-50/30' : 'border-stone-200 focus:bg-white focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20'
+                    } transition-all`}
                   />
                   {formErrors.name && (
-                    <p className="mt-1 text-xs text-red-600">{formErrors.name}</p>
+                    <p className="mt-1 text-xs text-red-600 font-medium">{formErrors.name}</p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="contact-phone" className="block text-xs font-semibold text-stone-700 uppercase tracking-wide mb-1">
+                  <label htmlFor="contact-phone" className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5 font-mono">
                     {t.contactPage.phone} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -232,19 +232,19 @@ export const ContactPage: React.FC = () => {
                       setContactForm({ ...contactForm, phone: e.target.value });
                       if (formErrors.phone) setFormErrors({ ...formErrors, phone: '' });
                     }}
-                    className={`w-full py-2.5 px-3 text-sm rounded-lg bg-stone-50 border ${
-                      formErrors.phone ? 'border-red-400 bg-red-50/30' : 'border-stone-200 focus:bg-white focus:border-emerald-700'
-                    }`}
+                    className={`w-full py-3 px-4 text-base rounded-xl bg-stone-50 border ${
+                      formErrors.phone ? 'border-red-400 bg-red-50/30' : 'border-stone-200 focus:bg-white focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20'
+                    } transition-all`}
                   />
                   {formErrors.phone && (
-                    <p className="mt-1 text-xs text-red-600">{formErrors.phone}</p>
+                    <p className="mt-1 text-xs text-red-600 font-medium">{formErrors.phone}</p>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="contact-email" className="block text-xs font-semibold text-stone-700 uppercase tracking-wide mb-1">
+                  <label htmlFor="contact-email" className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5 font-mono">
                     {t.contactPage.email}
                   </label>
                   <input
@@ -252,12 +252,12 @@ export const ContactPage: React.FC = () => {
                     id="contact-email"
                     value={contactForm.email}
                     onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                    className="w-full py-2.5 px-3 text-sm rounded-lg bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700"
+                    className="w-full py-3 px-4 text-base rounded-xl bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="contact-subject" className="block text-xs font-semibold text-stone-700 uppercase tracking-wide mb-1">
+                  <label htmlFor="contact-subject" className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5 font-mono">
                     {t.contactPage.subject}
                   </label>
                   <input
@@ -265,13 +265,13 @@ export const ContactPage: React.FC = () => {
                     id="contact-subject"
                     value={contactForm.subject}
                     onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
-                    className="w-full py-2.5 px-3 text-sm rounded-lg bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700"
+                    className="w-full py-3 px-4 text-base rounded-xl bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="contact-message" className="block text-xs font-semibold text-stone-700 uppercase tracking-wide mb-1">
+                <label htmlFor="contact-message" className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5 font-mono">
                   {t.contactPage.message} <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -282,9 +282,9 @@ export const ContactPage: React.FC = () => {
                     setContactForm({ ...contactForm, message: e.target.value });
                     if (formErrors.message) setFormErrors({ ...formErrors, message: '' });
                   }}
-                  className={`w-full py-2.5 px-3 text-sm rounded-lg bg-stone-50 border ${
-                    formErrors.message ? 'border-red-400 bg-red-50/30' : 'border-stone-200 focus:bg-white focus:border-emerald-700'
-                  }`}
+                  className={`w-full py-3 px-4 text-base rounded-xl bg-stone-50 border ${
+                    formErrors.message ? 'border-red-400 bg-red-50/30' : 'border-stone-200 focus:bg-white focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20'
+                  } transition-all`}
                 />
                 {formErrors.message && (
                   <p className="mt-1 text-xs text-red-600">{formErrors.message}</p>

@@ -58,29 +58,29 @@ export const AboutPage: React.FC = () => {
           <p>{t.aboutPage.missionP1}</p>
           <p>{t.aboutPage.missionP2}</p>
 
-          <div className="pt-4 grid grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-white border border-stone-200">
-              <ShieldCheck className="w-5 h-5 text-emerald-800 mb-2" />
-              <h4 className="font-bold text-stone-900 text-sm">
+          <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-5 rounded-2xl bg-white border border-stone-200/90 shadow-sm hover:shadow-md transition-all">
+              <ShieldCheck className="w-6 h-6 text-emerald-800 mb-2.5" />
+              <h4 className="font-bold text-stone-900 text-base">
                 {language === 'bn' ? 'নিরাপত্তা প্রথম' : 'Safety Certified'}
               </h4>
-              <p className="text-xs text-stone-500 mt-1">
+              <p className="text-xs sm:text-sm text-stone-600 mt-1">
                 {language === 'bn' ? 'নিয়মিত ড্রাইভ ও রিসোর্ট অডিট' : 'Regular transport and lodging safety audits'}
               </p>
             </div>
-            <div className="p-4 rounded-xl bg-white border border-stone-200">
-              <Heart className="w-5 h-5 text-emerald-800 mb-2" />
-              <h4 className="font-bold text-stone-900 text-sm">
+            <div className="p-5 rounded-2xl bg-white border border-stone-200/90 shadow-sm hover:shadow-md transition-all">
+              <Heart className="w-6 h-6 text-emerald-800 mb-2.5" />
+              <h4 className="font-bold text-stone-900 text-base">
                 {language === 'bn' ? 'কমিউনিটি সচেতন' : 'Community Driven'}
               </h4>
-              <p className="text-xs text-stone-500 mt-1">
+              <p className="text-xs sm:text-sm text-stone-600 mt-1">
                 {language === 'bn' ? 'স্থানীয় আদিবাসী গাইড ও অর্থায়ন' : 'Direct empowerment of indigenous guides'}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="lg:col-span-5 aspect-4/3 rounded-2xl overflow-hidden shadow-lg border border-stone-200">
+        <div className="lg:col-span-5 aspect-4/3 rounded-2xl overflow-hidden shadow-xl border border-stone-200">
           <img
             src="/src/assets/images/hero_sajek_sunrise_1791788897775.jpg"
             alt="Scenic Bangladesh Travel"
@@ -93,10 +93,10 @@ export const AboutPage: React.FC = () => {
       {/* Team Profiles */}
       <div className="mt-16 pt-12 border-t border-stone-200">
         <div className="max-w-2xl mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-stone-900">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-stone-900">
             {t.aboutPage.teamTitle}
           </h2>
-          <p className="mt-2 text-sm sm:text-base text-stone-600">
+          <p className="mt-2 text-base sm:text-lg text-stone-600">
             {t.aboutPage.teamSubtitle}
           </p>
         </div>
@@ -105,20 +105,22 @@ export const AboutPage: React.FC = () => {
           {teamMembers.map((member, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-xl border border-stone-200 p-6 shadow-xs"
+              className="bg-white rounded-2xl border border-stone-200/90 p-7 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
             >
-              <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-900 font-bold flex items-center justify-center text-lg mb-4">
-                {member.name.charAt(0)}
+              <div>
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-900 font-extrabold flex items-center justify-center text-xl mb-4 shadow-xs">
+                  {member.name.charAt(0)}
+                </div>
+                <h3 className="text-xl font-bold text-stone-900">
+                  {member.name}
+                </h3>
+                <p className="text-xs sm:text-sm font-bold text-emerald-800 uppercase tracking-wider mt-1 mb-3 font-mono">
+                  {member.role}
+                </p>
+                <p className="text-sm sm:text-base text-stone-600 leading-relaxed">
+                  {member.bio}
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-stone-900">
-                {member.name}
-              </h3>
-              <p className="text-xs font-semibold text-emerald-800 uppercase tracking-wider mt-0.5 mb-3 font-mono">
-                {member.role}
-              </p>
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                {member.bio}
-              </p>
             </div>
           ))}
         </div>

@@ -352,16 +352,16 @@ export const PackageDetailPage: React.FC = () => {
 
           {/* Sticky Booking CTA Card (Desktop right rail) */}
           <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
-            <div className="bg-white rounded-xl border border-stone-200/90 p-6 shadow-sm">
+            <div className="bg-white rounded-2xl border border-stone-200/90 p-6 sm:p-7 shadow-lg shadow-stone-200/60">
               <div className="mb-6">
-                <span className="block text-xs uppercase tracking-wider text-stone-500 mb-1">
+                <span className="block text-xs uppercase tracking-wider text-stone-500 mb-1 font-mono font-semibold">
                   {t.packageDetails.startingAt}
                 </span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-extrabold text-stone-900 tabular-nums">
+                  <span className="text-3xl sm:text-4xl font-extrabold text-stone-900 tabular-nums">
                     {formatPrice(tour.priceBDT)}
                   </span>
-                  <span className="text-xs text-stone-500 font-normal">
+                  <span className="text-sm text-stone-500 font-normal">
                     / {t.common.perPerson}
                   </span>
                 </div>
@@ -370,7 +370,7 @@ export const PackageDetailPage: React.FC = () => {
               <div className="space-y-3 mb-6">
                 <Link
                   to={`/booking?package=${tour.slug}`}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-emerald-800 hover:bg-emerald-900 active:bg-emerald-950 text-white font-semibold text-sm transition-colors shadow-xs"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-emerald-800 hover:bg-emerald-900 active:bg-emerald-950 text-white font-bold text-base transition-all shadow-md hover:shadow-lg cursor-pointer"
                 >
                   <span>{t.packageDetails.inquireNow}</span>
                   <ArrowRight className="w-4 h-4" />
@@ -379,9 +379,9 @@ export const PackageDetailPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleWhatsAppDirect}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-semibold text-sm transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-sm sm:text-base transition-all cursor-pointer shadow-xs"
                 >
-                  <MessageCircle className="w-4 h-4 text-emerald-700" />
+                  <MessageCircle className="w-4.5 h-4.5 text-emerald-700" />
                   <span>{t.packageDetails.instantWhatsApp}</span>
                 </button>
               </div>
@@ -458,6 +458,37 @@ export const PackageDetailPage: React.FC = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Mobile Sticky Booking Bar for great usability on smartphones */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-stone-200/90 p-3 sm:p-4 shadow-2xl flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <span className="block text-[11px] uppercase tracking-wider text-stone-500 font-semibold">
+            {t.common.startsFrom}
+          </span>
+          <span className="text-lg sm:text-xl font-extrabold text-stone-900 tabular-nums truncate block">
+            {formatPrice(tour.priceBDT)}
+            <span className="text-xs font-normal text-stone-500 ml-1">/ {t.common.perPerson}</span>
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={handleWhatsAppDirect}
+            className="inline-flex items-center justify-center p-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold active:scale-95 transition-all"
+            aria-label="Direct WhatsApp Inquiry"
+          >
+            <MessageCircle className="w-5 h-5" />
+          </button>
+
+          <Link
+            to={`/booking?package=${tour.slug}`}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm shadow-md active:scale-95 transition-all"
+          >
+            <span>{t.packageDetails.inquireNow}</span>
+          </Link>
+        </div>
       </div>
 
       {/* Package Report Modal */}

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="jatriq-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="50%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+    <linearGradient id="sun-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#f97316" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25" />
+    </filter>
+  </defs>
+  
+  <!-- Outer Rounded Badge -->
+  <rect width="64" height="64" rx="16" fill="url(#jatriq-grad)" />
+  
+  <!-- Subtle decorative circular ring -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" />
+  
+  <!-- Rising sun representing journey & morning light -->
+  <circle cx="44" cy="20" r="6" fill="url(#sun-grad)" filter="url(#shadow)" />
+  
+  <!-- Stylized Mountain / Compass Path (Hill Tracts & Horizons) -->
+  <path d="M12 48 L26 28 L34 38 L42 26 L54 48 Z" fill="rgba(255,255,255,0.18)" />
+  
+  <!-- Foreground Jatriq 'J' monogram in Bengali & Latin fusion -->
+  <!-- Stylized Jatriq Navigator Compass Needle & Calligraphic J -->
+  <path d="M22 20 H34 C41 20 44 24 44 29 C44 37 36 44 26 44 C21 44 17 41 17 37 C17 34 19 32 22 32 C25 32 27 34 27 36.5 C27 37.8 26.2 38.6 25 39 C26.2 39.5 28 39.8 30 39.8 C34.5 39.8 38 36 38 30 C38 25.5 35 24 31 24 H22 Z" fill="#ffffff" filter="url(#shadow)" />
+</svg>

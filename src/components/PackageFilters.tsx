@@ -54,29 +54,29 @@ export const PackageFilters: React.FC<PackageFiltersProps> = ({
     filters.sortBy !== 'featured';
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200/90 p-4 sm:p-6 mb-8 shadow-xs">
+    <div className="bg-white rounded-2xl border border-stone-200/90 p-5 sm:p-7 mb-8 shadow-md sm:shadow-lg shadow-stone-200/60">
       {/* Top Row: Search and Sort */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 mb-5">
         {/* Search Bar */}
         <div className="relative md:col-span-7 lg:col-span-8">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
-            <Search className="w-4 h-4" />
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-stone-400">
+            <Search className="w-5 h-5" />
           </div>
           <input
             type="text"
             value={filters.searchQuery}
             onChange={handleSearchChange}
             placeholder={t.packagesPage.searchPlaceholder}
-            className="w-full pl-10 pr-9 py-2.5 text-sm rounded-lg bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700 transition-colors text-stone-900 placeholder:text-stone-400"
+            className="w-full pl-11 pr-10 py-3 text-sm sm:text-base rounded-xl bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 transition-all text-stone-900 placeholder:text-stone-400 font-medium"
           />
           {filters.searchQuery && (
             <button
               type="button"
               onClick={() => onFilterChange({ ...filters, searchQuery: '' })}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-700"
+              className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-stone-400 hover:text-stone-700 cursor-pointer"
               aria-label="Clear search query"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           )}
         </div>
@@ -91,7 +91,7 @@ export const PackageFilters: React.FC<PackageFiltersProps> = ({
               id="duration-filter"
               value={filters.duration}
               onChange={handleDurationChange}
-              className="w-full py-2.5 px-3 text-xs sm:text-sm rounded-lg bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700 text-stone-700 transition-colors"
+              className="w-full py-3 px-3.5 text-sm sm:text-base font-medium rounded-xl bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700 text-stone-800 transition-all cursor-pointer"
             >
               <option value="all">{t.packagesPage.allDurations}</option>
               {durations.map((d) => (
@@ -113,7 +113,7 @@ export const PackageFilters: React.FC<PackageFiltersProps> = ({
               id="sort-filter"
               value={filters.sortBy}
               onChange={handleSortChange}
-              className="w-full py-2.5 px-3 text-xs sm:text-sm rounded-lg bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700 text-stone-700 transition-colors"
+              className="w-full py-3 px-3.5 text-sm sm:text-base font-medium rounded-xl bg-stone-50 border border-stone-200 focus:bg-white focus:border-emerald-700 text-stone-800 transition-all cursor-pointer"
             >
               <option value="featured">{t.packagesPage.sortFeatured}</option>
               <option value="price-asc">{t.packagesPage.sortPriceAsc}</option>
@@ -125,7 +125,7 @@ export const PackageFilters: React.FC<PackageFiltersProps> = ({
       </div>
 
       {/* Categories Bar & Results Count */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-stone-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-stone-100">
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <span className="text-xs text-stone-400 font-medium mr-1 hidden lg:inline">
             <SlidersHorizontal className="w-3.5 h-3.5 inline mr-1" />

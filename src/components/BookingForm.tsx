@@ -141,7 +141,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
       {/* Form Column */}
-      <div className="lg:col-span-7 bg-white rounded-xl border border-stone-200/90 p-6 sm:p-8 shadow-xs">
+      <div className="lg:col-span-7 bg-white rounded-2xl border border-stone-200/90 p-6 sm:p-9 shadow-lg sm:shadow-xl shadow-stone-200/60">
         {isSubmitted && submissionResult ? (
           <div className="text-center py-6 animate-in fade-in duration-300">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 text-emerald-800 mb-4">
@@ -393,7 +393,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
       {/* Package Summary Column */}
       <div className="lg:col-span-5 space-y-6">
         {selectedTour ? (
-          <div className="bg-white rounded-xl border border-stone-200/90 overflow-hidden shadow-xs">
+          <div className="bg-white rounded-2xl border border-stone-200/90 overflow-hidden shadow-lg shadow-stone-200/60 sticky top-24">
             <div className="aspect-16/9 relative overflow-hidden bg-stone-100">
               <img
                 src={selectedTour.coverImage}

@@ -39,10 +39,10 @@ export const WhatsAppFloatingButton: React.FC = () => {
           onClick={handleClick}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
-          className="flex items-center justify-center w-13 h-13 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-700"
+          className="flex items-center justify-center w-14 h-14 sm:w-15 sm:h-15 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xl hover:shadow-emerald-700/50 hover:scale-108 active:scale-95 transition-all focus:outline-hidden focus-visible:ring-4 focus-visible:ring-emerald-700/40 ring-2 ring-white/80"
           aria-label={t.common.whatsappChat}
         >
-          <MessageCircle className="w-7 h-7" />
+          <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8" />
         </a>
       </div>
 

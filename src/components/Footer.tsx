@@ -4,6 +4,8 @@ import { Phone, Mail, MapPin, MessageCircle, Heart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 
+import { Logo } from './Logo';
+
 export const Footer: React.FC = () => {
   const { t, getText, language } = useLanguage();
   const { config } = useData();
@@ -14,11 +16,9 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 pb-12 border-b border-stone-800">
           {/* Col 1: Brand & Bio */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-2xl font-bold tracking-tight text-white">
-              <span className="font-serif italic font-extrabold text-emerald-400 text-3xl">J</span>
-              <span className="font-sans font-bold">{config.agencyName}</span>
-              <span className="text-xs text-emerald-400 font-serif ml-1">{config.brandMark}</span>
-            </div>
+            <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
+              <Logo size="md" variant="light" showTagline={true} />
+            </Link>
             <p className="text-sm text-stone-400 leading-relaxed max-w-sm">
               {getText(config.tagline)}
             </p>
