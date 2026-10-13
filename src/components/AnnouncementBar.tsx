@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { siteConfig } from '../config/siteConfig';
+import { useData } from '../context/DataContext';
 
 export const AnnouncementBar: React.FC = () => {
   const [visible, setVisible] = useState(() => {
@@ -13,8 +13,9 @@ export const AnnouncementBar: React.FC = () => {
   });
 
   const { getText } = useLanguage();
+  const { config } = useData();
 
-  if (!siteConfig.announcementBar.enabled || !visible) {
+  if (!config.announcementBar.enabled || !visible) {
     return null;
   }
 
@@ -33,7 +34,7 @@ export const AnnouncementBar: React.FC = () => {
         <div className="flex-1 flex items-center justify-center gap-2 text-center font-medium">
           <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 hidden sm:inline" />
           <span className="truncate sm:whitespace-normal">
-            {getText(siteConfig.announcementBar.text)}
+            {getText(config.announcementBar.text)}
           </span>
         </div>
         <button

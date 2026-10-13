@@ -44,6 +44,7 @@ export interface TourPackage {
   featured: boolean;
   maxGroupSize: number;
   difficulty?: BilingualText;
+  isVerifiedPackage: boolean;
 }
 
 export interface DestinationInfo {
@@ -66,6 +67,22 @@ export interface BookingInquiry {
   specialRequests?: string;
 }
 
+export type ReportReason =
+  | 'inaccurate-info'
+  | 'suspicious-pricing'
+  | 'expired-offer'
+  | 'copyright-issue'
+  | 'safety-concern'
+  | 'other';
+
+export interface PackageReport {
+  packageSlug: string;
+  packageTitle: string;
+  reason: ReportReason;
+  details: string;
+  reporterContact?: string;
+}
+
 export interface SiteConfig {
   agencyName: string;
   brandMark: string;
@@ -74,6 +91,8 @@ export interface SiteConfig {
   whatsappNumber: string; // international format without spaces, e.g. "8801711234567"
   isPlaceholderContact: boolean;
   email: string;
+  reportingEmail?: string; // dedicated compliance/reporting address (leave empty to simulate unconfigured)
+  isVerifiedAgency: boolean;
   address: BilingualText;
   facebookUrl: string;
   instagramUrl: string;

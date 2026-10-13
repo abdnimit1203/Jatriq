@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { siteConfig } from '../config/siteConfig';
+import { useData } from '../context/DataContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { t, language } = useLanguage();
+  const { config } = useData();
   const location = useLocation();
 
   useEffect(() => {
@@ -55,10 +56,10 @@ export const Header: React.FC = () => {
           >
             <span className="font-serif italic font-extrabold text-emerald-800 text-3xl">J</span>
             <span className="font-sans font-bold tracking-tight">
-              {siteConfig.agencyName}
+              {config.agencyName}
             </span>
             <span className="text-xs text-emerald-700 font-normal ml-1 font-serif">
-              {siteConfig.brandMark}
+              {config.brandMark}
             </span>
           </Link>
 

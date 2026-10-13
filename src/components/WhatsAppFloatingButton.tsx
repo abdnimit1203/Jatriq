@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
-import { siteConfig } from '../config/siteConfig';
 import { useLanguage } from '../context/LanguageContext';
+import { useData } from '../context/DataContext';
 import { validateBusinessWhatsApp } from '../lib/whatsapp';
 
 export const WhatsAppFloatingButton: React.FC = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { t, language } = useLanguage();
+  const { config } = useData();
 
-  const validation = validateBusinessWhatsApp(siteConfig.whatsappNumber);
+  const validation = validateBusinessWhatsApp(config.whatsappNumber);
 
   const handleClick = (e: React.MouseEvent) => {
     if (!validation.isValidNumber) {
@@ -62,8 +63,8 @@ export const WhatsAppFloatingButton: React.FC = () => {
             </div>
             <p className="text-sm text-stone-600 mb-4 leading-relaxed">
               {language === 'bn'
-                ? `বর্তমানে সাইটে একটি ডেমো নম্বর (${siteConfig.contactPhone}) দেওয়া আছে। আপনার আসল এজেন্সি নম্বরটি সক্রিয় করতে 'src/config/siteConfig.ts' ফাইলের 'whatsappNumber' প্রোপার্টি পরিবর্তন করুন।`
-                : `The site is currently configured with a demo placeholder (${siteConfig.contactPhone}). To connect real incoming inquiries to your travel agency WhatsApp, edit 'whatsappNumber' in 'src/config/siteConfig.ts'.`}
+                ? `বর্তমানে সাইটে একটি ডেমো নম্বর (${config.contactPhone}) দেওয়া আছে। আপনার আসল এজেন্সি নম্বরটি সক্রিয় করতে অ্যাডমিন প্যানেল বা 'src/config/siteConfig.ts' ফাইলের 'whatsappNumber' প্রোপার্টি পরিবর্তন করুন।`
+                : `The site is currently configured with a demo placeholder (${config.contactPhone}). To connect real incoming inquiries to your travel agency WhatsApp, edit 'whatsappNumber' in the Admin Panel or 'src/config/siteConfig.ts'.`}
             </p>
             <div className="bg-stone-100 p-3 rounded-lg text-xs font-mono text-stone-800 mb-5 break-all">
               siteConfig.whatsappNumber = "8801XXXXXXXXX"

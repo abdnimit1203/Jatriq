@@ -18,6 +18,10 @@ export const siteConfig: SiteConfig = {
   // If true, shows a helpful setup notice when WhatsApp booking is triggered
   isPlaceholderContact: false,
   email: 'contact@jatriq-tours.com',
+  // Dedicated reporting/compliance contact for package inquiries/reports
+  reportingEmail: 'compliance@jatriq-tours.com',
+  // Agency verification status: set to false for demo template
+  isVerifiedAgency: false,
   address: {
     bn: 'হাউস ৪২, রোড ১১, ব্লক-ডি, বনানী, ঢাকা-১২১৩, বাংলাদেশ',
     en: 'House 42, Road 11, Block-D, Banani, Dhaka-1213, Bangladesh',

@@ -2,10 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, MessageCircle, Heart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { siteConfig } from '../config/siteConfig';
+import { useData } from '../context/DataContext';
 
 export const Footer: React.FC = () => {
   const { t, getText, language } = useLanguage();
+  const { config } = useData();
 
   return (
     <footer className="bg-stone-900 text-stone-300 pt-16 pb-12 border-t border-stone-800">
@@ -15,15 +16,15 @@ export const Footer: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-2xl font-bold tracking-tight text-white">
               <span className="font-serif italic font-extrabold text-emerald-400 text-3xl">J</span>
-              <span className="font-sans font-bold">{siteConfig.agencyName}</span>
-              <span className="text-xs text-emerald-400 font-serif ml-1">{siteConfig.brandMark}</span>
+              <span className="font-sans font-bold">{config.agencyName}</span>
+              <span className="text-xs text-emerald-400 font-serif ml-1">{config.brandMark}</span>
             </div>
             <p className="text-sm text-stone-400 leading-relaxed max-w-sm">
-              {getText(siteConfig.tagline)}
+              {getText(config.tagline)}
             </p>
             <div className="pt-2">
               <a
-                href={`https://wa.me/${siteConfig.whatsappNumber}`}
+                href={`https://wa.me/${config.whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 hover:bg-emerald-900 hover:text-white transition-colors text-xs font-medium"
@@ -110,18 +111,18 @@ export const Footer: React.FC = () => {
             <ul className="space-y-3 text-sm text-stone-400">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{getText(siteConfig.address)}</span>
+                <span>{getText(config.address)}</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                <a href={`tel:${siteConfig.contactPhone.replace(/\s+/g, '')}`} className="hover:text-emerald-300">
-                  {siteConfig.contactPhone}
+                <a href={`tel:${config.contactPhone.replace(/\s+/g, '')}`} className="hover:text-emerald-300">
+                  {config.contactPhone}
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
-                <a href={`mailto:${siteConfig.email}`} className="hover:text-emerald-300">
-                  {siteConfig.email}
+                <a href={`mailto:${config.email}`} className="hover:text-emerald-300">
+                  {config.email}
                 </a>
               </li>
               <li className="pt-2 text-xs text-stone-500">
@@ -133,8 +134,12 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar & Demo Notice */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-stone-500">
-          <div className="flex items-center gap-2">
-            <span>© {new Date().getFullYear()} {siteConfig.agencyName}. {t.common.allRightsReserved}</span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span>© {new Date().getFullYear()} {config.agencyName}. {t.common.allRightsReserved}</span>
+            <span aria-hidden="true">&middot;</span>
+            <Link to="/admin" className="text-stone-400 hover:text-stone-200 transition-colors">
+              Agency Demo Login
+            </Link>
           </div>
 
           <div className="text-center md:text-right text-stone-400 max-w-xl">

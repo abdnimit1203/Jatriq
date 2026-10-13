@@ -11,19 +11,20 @@ import {
   Search,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { tourPackages, destinationsList, sampleTestimonials } from '../data/packages';
+import { useData } from '../context/DataContext';
+import { destinationsList, sampleTestimonials } from '../data/packages';
 import { TourPackageCard } from '../components/TourPackageCard';
 import { DestinationCard } from '../components/DestinationCard';
 import { TestimonialCard } from '../components/TestimonialCard';
 import { SectionHeading } from '../components/SectionHeading';
-import { siteConfig } from '../config/siteConfig';
 
 export const HomePage: React.FC = () => {
   const { t, getText, formatNumber, language } = useLanguage();
+  const { packages, config } = useData();
   const navigate = useNavigate();
   const [heroSearch, setHeroSearch] = useState('');
 
-  const featuredPackages = tourPackages.filter((p) => p.featured).slice(0, 3);
+  const featuredPackages = packages.filter((p) => p.featured).slice(0, 3);
 
   const handleHeroSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -359,7 +360,7 @@ export const HomePage: React.FC = () => {
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <a
-                href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
+                href={`https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(
                   language === 'bn'
                     ? 'আসসালামু আলাইকুম, আমি একটি নতুন ট্যুর বুকিং বিষয়ে পরামর্শ নিতে চাচ্ছি।'
                     : 'Hello, I would like advice on planning a custom tour in Bangladesh.'

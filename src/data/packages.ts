@@ -42,6 +42,7 @@ export const tourPackages: TourPackage[] = [
     ],
     maxGroupSize: 12,
     featured: true,
+    isVerifiedPackage: false,
     accommodation: {
       bn: 'সাজেক ভ্যালি প্রিমিয়াম কাঠের কটেজ (মেঘের ভিউ ব্যালকনি)',
       en: 'Premium Wooden Eco-Cottage with private cloud-view balcony',
@@ -186,6 +187,7 @@ export const tourPackages: TourPackage[] = [
     ],
     maxGroupSize: 16,
     featured: true,
+    isVerifiedPackage: false,
     accommodation: {
       bn: 'কলাতলী / ইনানী বিচ সংলগ্ন ৪ তারকা রেটেড সি-ভিউ রিসোর্ট',
       en: '4-Star Oceanfront Resort with Private Balcony and Swimming Pool',
@@ -326,6 +328,7 @@ export const tourPackages: TourPackage[] = [
     ],
     maxGroupSize: 14,
     featured: true,
+    isVerifiedPackage: false,
     accommodation: {
       bn: 'চা বাগান ঘেরা প্রিমিয়াম ইকো-রিসোর্ট / উডেন বাংলো',
       en: 'Boutique Tea Garden Eco-Resort nestled amid private plantations',
@@ -464,6 +467,7 @@ export const tourPackages: TourPackage[] = [
     ],
     maxGroupSize: 25,
     featured: true,
+    isVerifiedPackage: false,
     accommodation: {
       bn: 'বিলাসবহুল ট্রাভেল জাহাজে শীতাতপ নিয়ন্ত্রিত (AC) প্রাইভেট কেবিন',
       en: 'Air-conditioned private twin/double cabin aboard safari cruiser vessel',
@@ -604,6 +608,7 @@ export const tourPackages: TourPackage[] = [
     ],
     maxGroupSize: 12,
     featured: false,
+    isVerifiedPackage: false,
     accommodation: {
       bn: 'বান্দরবান হিল ভিউ ইকো-রিসোর্ট / নীলগিরি সংলগ্ন কটেজ',
       en: 'Hill-view Boutique Eco Resort with panoramic valley vistas',
@@ -742,6 +747,7 @@ export const tourPackages: TourPackage[] = [
     ],
     maxGroupSize: 18,
     featured: true,
+    isVerifiedPackage: false,
     accommodation: {
       bn: 'পশ্চিম সৈকত সংলগ্ন নারিকেল কুঞ্জ ইকো-রিসোর্ট (সি-ফেসিং রুম)',
       en: 'West Beach Eco-Resort surrounded by coconut palms with sea-facing porch',

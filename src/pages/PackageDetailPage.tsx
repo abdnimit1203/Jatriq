@@ -14,21 +14,25 @@ import {
   Home,
   Navigation,
   Sparkles,
+  Flag,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { tourPackages } from '../data/packages';
-import { siteConfig } from '../config/siteConfig';
+import { useData } from '../context/DataContext';
+import { TourPackage } from '../types';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { TourPackageCard } from '../components/TourPackageCard';
+import { ReportPackageModal } from '../components/ReportPackageModal';
 
 export const PackageDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { t, getText, formatPrice, formatNumber, language } = useLanguage();
+  const { packages, config } = useData();
 
-  const tour = tourPackages.find((p) => p.slug === slug);
+  const tour = packages.find((p) => p.slug === slug);
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   if (!tour) {
     return (
@@ -56,17 +60,17 @@ export const PackageDetailPage: React.FC = () => {
   const activeImage = allImages[activeImageIndex] || tour.coverImage;
 
   // Related tours in same or different category
-  const relatedTours = tourPackages
-    .filter((p) => p.id !== tour.id)
+  const relatedTours: TourPackage[] = packages
+    .filter((p: TourPackage) => p.id !== tour.id)
     .slice(0, 3);
 
   const handleWhatsAppDirect = () => {
     const rawMsg =
       language === 'bn'
-        ? `আসসালামু আলাইকুম, আমি ${siteConfig.agencyName} এর "${getText(tour.title)}" (${formatPrice(tour.priceBDT)}) প্যাকেজটি সম্পর্কে তথ্য ও বুকিং জানতে আগ্রহী।`
-        : `Hello, I am interested in inquiring about "${getText(tour.title)}" (${formatPrice(tour.priceBDT)}) on ${siteConfig.agencyName}.`;
+        ? `আসসালামু আলাইকুম, আমি ${config.agencyName} এর "${getText(tour.title)}" (${formatPrice(tour.priceBDT)}) প্যাকেজটি সম্পর্কে তথ্য ও বুকিং জানতে আগ্রহী।`
+        : `Hello, I am interested in inquiring about "${getText(tour.title)}" (${formatPrice(tour.priceBDT)}) on ${config.agencyName}.`;
     window.open(
-      `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(rawMsg)}`,
+      `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(rawMsg)}`,
       '_blank',
       'noopener,noreferrer'
     );
@@ -386,15 +390,40 @@ export const PackageDetailPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
                   <span>
-                    {language === 'bn' ? 'কোনো লুকানো খরচ নেই' : '100% Transparent Pricing'}
+                    {language === 'bn' ? 'স্বচ্ছ মূল্য ও শর্তাবলী' : 'Transparent Pricing & Inclusions'}
                   </span>
                 </div>
+                {/* Truthful Verification Status Indicator */}
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>
-                    {language === 'bn' ? 'অভিজ্ঞ স্থানীয় গাইড সহায়তা' : 'Verified Local Community Guides'}
+                  <span
+                    className={`inline-block w-2 h-2 rounded-full ${
+                      tour.isVerifiedPackage && config.isVerifiedAgency
+                        ? 'bg-emerald-600'
+                        : 'bg-amber-500'
+                    }`}
+                  />
+                  <span className="text-[11px] text-stone-500">
+                    {tour.isVerifiedPackage && config.isVerifiedAgency
+                      ? language === 'bn'
+                        ? 'যাচাইকৃত রেজিস্টার্ড প্যাকেজ'
+                        : 'Verified Agency Listing'
+                      : language === 'bn'
+                      ? 'ডেমো প্যাকেজ বিবরণী (অপরীক্ষিত)'
+                      : 'Demo Listing (Unverified Sample)'}
                   </span>
                 </div>
+              </div>
+
+              {/* Package Report Trigger */}
+              <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setReportModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 text-xs text-stone-400 hover:text-red-700 transition-colors"
+                >
+                  <Flag className="w-3.5 h-3.5" />
+                  <span>{language === 'bn' ? 'প্যাকেজটি রিপোর্ট করুন' : 'Report this listing'}</span>
+                </button>
               </div>
             </div>
 
@@ -404,10 +433,10 @@ export const PackageDetailPage: React.FC = () => {
                 {t.common.callUs}
               </span>
               <a
-                href={`tel:${siteConfig.contactPhone.replace(/\s+/g, '')}`}
+                href={`tel:${config.contactPhone.replace(/\s+/g, '')}`}
                 className="font-mono text-emerald-900 font-bold text-sm hover:underline"
               >
-                {siteConfig.contactPhone}
+                {config.contactPhone}
               </a>
               <span className="block mt-1 text-[11px] text-stone-500">
                 {t.common.operatingHours}
@@ -430,6 +459,13 @@ export const PackageDetailPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Package Report Modal */}
+      <ReportPackageModal
+        tour={tour}
+        isOpen={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+      />
     </div>
   );
 };

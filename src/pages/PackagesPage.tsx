@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { tourPackages } from '../data/packages';
+import { useData } from '../context/DataContext';
 import { TourPackageCard } from '../components/TourPackageCard';
 import { PackageFilters, FilterState } from '../components/PackageFilters';
 import { Breadcrumbs } from '../components/Breadcrumbs';
@@ -9,6 +9,7 @@ import { Compass, RotateCcw } from 'lucide-react';
 
 export const PackagesPage: React.FC = () => {
   const { t, getText, language } = useLanguage();
+  const { packages } = useData();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const urlQuery = searchParams.get('q') || '';
@@ -51,7 +52,7 @@ export const PackagesPage: React.FC = () => {
   }, [language]);
 
   const filteredPackages = useMemo(() => {
-    return tourPackages
+    return packages
       .filter((pkg) => {
         // Search query filter (matches title or destination in either language)
         if (filters.searchQuery.trim()) {

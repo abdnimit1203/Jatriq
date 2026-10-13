@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { TourPackage, BookingInquiry } from '../types';
-import { siteConfig } from '../config/siteConfig';
 import { useLanguage } from '../context/LanguageContext';
+import { useData } from '../context/DataContext';
 import { buildWhatsAppUrl } from '../lib/whatsapp';
-import { tourPackages } from '../data/packages';
 import {
   MessageCircle,
   CheckCircle2,
@@ -21,18 +20,20 @@ interface BookingFormProps {
 
 export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) => {
   const { t, getText, formatPrice, language } = useLanguage();
+  const { packages, config } = useData();
 
   const [formData, setFormData] = useState<BookingInquiry>({
     fullName: '',
     phone: '',
     email: '',
-    packageSlug: initialPackageSlug || (tourPackages[0]?.slug ?? ''),
+    packageSlug: initialPackageSlug || (packages[0]?.slug ?? ''),
     travelDate: '',
     travelersCount: 2,
     specialRequests: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<{
     whatsappUrl: string;
@@ -50,7 +51,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
     }
   }, [initialPackageSlug]);
 
-  const selectedTour = tourPackages.find((p) => p.slug === formData.packageSlug);
+  const selectedTour = packages.find((p) => p.slug === formData.packageSlug);
 
   const validatePhone = (phone: string): boolean => {
     // Bangladeshi mobile format: 013-019 followed by 8 digits, with optional +88 / 88 prefix
@@ -68,6 +69,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
 
     if (!formData.phone.trim() || !validatePhone(formData.phone)) {
       newErrors.phone = t.bookingPage.validationErrors.phoneRequired;
+    }
+
+    if (formData.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      newErrors.email = language === 'bn' ? 'সঠিক ইমেইল ঠিকানা দিন।' : 'Please provide a valid email address.';
     }
 
     if (!formData.packageSlug) {
@@ -95,15 +100,19 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent duplicate rapid clicks
+
     if (!validateForm()) {
       return;
     }
+
+    setIsSubmitting(true);
 
     const packageTitle = selectedTour
       ? getText(selectedTour.title)
       : formData.packageSlug;
 
-    const result = buildWhatsAppUrl(formData, packageTitle, language);
+    const result = buildWhatsAppUrl(formData, packageTitle, language, config);
 
     setSubmissionResult({
       whatsappUrl: result.url,
@@ -111,12 +120,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
       isDemoNotice: result.isDemoNotice,
     });
     setIsSubmitted(true);
+    setIsSubmitting(false);
 
-    // Attempt to open WhatsApp window safely without blocking
+    // Attempt to open WhatsApp window safely; if blocked by browser popup protection, user has manual copy and link buttons
     try {
       window.open(result.url, '_blank', 'noopener,noreferrer');
     } catch {
-      // If popup blocker triggers, user can click the direct button
+      // Browser popup blocked; fallback action buttons are rendered
     }
   };
 
@@ -222,7 +232,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
                 }`}
               >
                 <option value="">{t.bookingPage.selectPlaceholder}</option>
-                {tourPackages.map((pkg) => (
+                {packages.map((pkg) => (
                   <option key={pkg.slug} value={pkg.slug}>
                     {getText(pkg.title)} ({formatPrice(pkg.priceBDT)})
                   </option>
@@ -369,10 +379,11 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-3 px-6 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 rounded-lg shadow-sm transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2 py-3 px-6 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 disabled:opacity-60 disabled:cursor-not-allowed rounded-lg shadow-sm transition-all focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-700 cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4 text-emerald-200" />
-                <span>{t.bookingPage.submitButton}</span>
+                <span>{isSubmitting ? (language === 'bn' ? 'প্রক্রিয়াধীন...' : 'Processing...') : t.bookingPage.submitButton}</span>
               </button>
             </div>
           </form>
@@ -458,7 +469,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
               : 'For corporate retreats, customized family routes, or vehicle upgrades, call our direct travel desk hotline.'}
           </p>
           <div className="pt-1 font-mono font-bold text-emerald-900 text-sm">
-            {siteConfig.contactPhone}
+            {config.contactPhone}
           </div>
         </div>
       </div>

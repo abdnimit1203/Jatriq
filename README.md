@@ -50,6 +50,39 @@ npm run build
 
 ---
 
+## 🛠️ Agency Admin Panel (Frontend-Only Demo)
+
+Jatriq includes a functional, single-agency **Admin Panel** to demonstrate how travel agencies can manage tours and agency branding without touching `.ts` source files.
+
+### 🔑 Demo Login Credentials
+- **URL**: `/admin` (or click "Agency Demo Login" in the footer)
+- **Username**: `admin`
+- **Password**: `admin`
+
+> ⚠️ **Security Limitation Disclosure**:  
+> This admin panel is a **client-side demonstration** intended for client presentations and local evaluations. Authentication is simulated in the browser session, and tour packages are stored in browser `localStorage`. It does **not** replace a secure backend with server-enforced authentication, and sensitive credentials must never be stored in the frontend.
+
+### 📋 Admin Capabilities
+1. **Live Tour Package Management**:
+   - **Create**: Add new tour packages with bilingual titles, pricing in BDT, durations, categories, cover image, itineraries, inclusions, exclusions, and logistics notes.
+   - **Edit**: Modify existing package details, pricing, itineraries, and descriptions.
+   - **Delete**: Remove tour packages with modal confirmation.
+   - **Featured Toggle**: Promote packages directly to the homepage carousel/grid with one click.
+   - **Search & Filter**: Real-time package search across titles, destinations, and IDs.
+   - **Live Public Sync**: Any changes made in the admin panel immediately reflect across the public website (`/`, `/packages`, `/packages/:slug`, and `/booking`).
+
+2. **JSON Import & Export**:
+   - **Export**: Download current tour packages as a structured `jatriq-tour-packages-YYYY-MM-DD.json` file.
+   - **Import**: Upload any package JSON file with instant schema validation, error feedback, and preview confirmation before applying.
+   - **Template**: Download a sample schema-compliant JSON template with one click.
+   - **Reset**: Revert tour packages back to the original handcrafted Bangladesh sample packages at any time.
+
+3. **Agency Settings Management**:
+   - Update agency business name, taglines, phone numbers, WhatsApp dispatch number, office address, and business hours.
+   - Persists in `localStorage` and syncs with the public website header, footer, floating buttons, and booking message generator.
+
+---
+
 ## 🎨 How to Customize for Any Agency (Agency White-Labeling)
 
 ### 1. Central Agency Configuration (`src/config/siteConfig.ts`)
@@ -138,18 +171,44 @@ Both share identical keys for menus, forms, validation errors, and common labels
 
 ---
 
+---
+
 ## 🌐 Deploying to Production
 
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy)
+
 ### Deploying to Netlify
-- Build command: `npm run build`
-- Publish directory: `dist`
-- SPA redirects are automatically handled via `public/_redirects`.
+- **Build command**: `npm run build`
+- **Publish directory**: `dist`
+- **Node version**: 18+ / 20+
+- **Environment variables**: None required for standard static hosting.
+- **SPA Fallback**: Single-page application redirects are automatically handled via `public/_redirects` (`/*  /index.html  200`).
 
 ### Deploying to Vercel
-- Framework preset: `Vite`
-- Build command: `npm run build`
-- Output directory: `dist`
-- Single-page application rewrites are already configured in `vercel.json`.
+- **Framework preset**: `Vite`
+- **Build command**: `npm run build`
+- **Output directory**: `dist`
+- **SPA Rewrites**: Single-page application rewrites are configured in `vercel.json`.
+
+---
+
+## ⚠️ Static Frontend Architecture & Honest Operational Boundaries
+
+1. **No Persistent Backend Database**:
+   - This project is a client-side React SPA without a database or backend server.
+   - The booking form (`/booking`) does **not** store reservations on a server or process payments; it validates traveler inputs and prepares a formatted, URL-encoded inquiry dispatched directly to the agency's official WhatsApp desk via `https://wa.me/`.
+   - The booking form includes duplicate-click submission prevention and copy-to-clipboard fallbacks in case popup blockers obstruct WhatsApp.
+
+2. **Package Reporting Mechanism**:
+   - The "Report this listing" feature on `/packages/:slug` does **not** write to a backend server.
+   - It prepares a structured issue report with the package slug, reason, and notes, and opens the user's default email client (`mailto:`) directed to `siteConfig.reportingEmail` (or provides a copyable summary).
+
+3. **Verification Metadata**:
+   - Demo tour packages and the sample agency profile in this template are explicitly flagged as **unverified** (`isVerifiedPackage: false`, `isVerifiedAgency: false`).
+   - The frontend displays an honest "Demo Listing (Unverified Sample)" status badge on package detail views to prevent deceptive representations.
+
+4. **Agency Contact Details**:
+   - The default configuration uses demo placeholder numbers (`8801711000000`). Travel agencies deploying this template must update `src/config/siteConfig.ts` with their legitimate WhatsApp and phone numbers.
 
 ---
 

@@ -1,4 +1,4 @@
-import { BookingInquiry, Language } from '../types';
+import { BookingInquiry, Language, SiteConfig } from '../types';
 import { siteConfig } from '../config/siteConfig';
 
 export interface WhatsAppValidation {
@@ -34,12 +34,14 @@ export function validateBusinessWhatsApp(phoneNumber: string): WhatsAppValidatio
 export function formatInquiryMessage(
   inquiry: BookingInquiry,
   packageTitle: string,
-  language: Language
+  language: Language,
+  config?: SiteConfig
 ): string {
+  const activeConfig = config || siteConfig;
   if (language === 'bn') {
     return [
       `*আসসালামু আলাইকুম / নমস্কার,*`,
-      `আমি ${siteConfig.agencyName} ওয়েবসাইট থেকে একটি ট্যুর বুকিং অনুসন্ধান পাঠাচ্ছি:`,
+      `আমি ${activeConfig.agencyName} ওয়েবসাইট থেকে একটি ট্যুর বুকিং অনুসন্ধান পাঠাচ্ছি:`,
       ``,
       `📍 *প্যাকেজ:* ${packageTitle}`,
       `👤 *নাম:* ${inquiry.fullName}`,
@@ -58,7 +60,7 @@ export function formatInquiryMessage(
   }
 
   return [
-    `*Hello ${siteConfig.agencyName} Team,*`,
+    `*Hello ${activeConfig.agencyName} Team,*`,
     `I would like to inquire about booking a tour package via your website:`,
     ``,
     `📍 *Tour Package:* ${packageTitle}`,
@@ -83,10 +85,12 @@ export function formatInquiryMessage(
 export function buildWhatsAppUrl(
   inquiry: BookingInquiry,
   packageTitle: string,
-  language: Language
+  language: Language,
+  config?: SiteConfig
 ): { url: string; rawText: string; isDemoNotice: boolean; messageText: string } {
-  const validation = validateBusinessWhatsApp(siteConfig.whatsappNumber);
-  const messageText = formatInquiryMessage(inquiry, packageTitle, language);
+  const activeConfig = config || siteConfig;
+  const validation = validateBusinessWhatsApp(activeConfig.whatsappNumber);
+  const messageText = formatInquiryMessage(inquiry, packageTitle, language, activeConfig);
   const encodedText = encodeURIComponent(messageText);
 
   // If placeholder, we still construct the link so the user can test or copy message
