@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useData } from './DataContext';
+import { generateLocalKnowledgeReply } from '../lib/travelKnowledge';
 
 export interface ChatMessage {
   id: string;
@@ -219,40 +220,50 @@ export const AIAssistantProvider: React.FC<{ children: ReactNode }> = ({ childre
         priceBDT: p.priceBDT,
       }));
 
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          messages: newHistory.map((m) => ({ role: m.role, content: m.content })),
-          tourContext: activeTourContext,
-          userLanguage: language,
-          packageCatalog,
-        }),
-      });
+      let replyText = '';
 
-      const data = await res.json();
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            messages: newHistory.map((m) => ({ role: m.role, content: m.content })),
+            tourContext: activeTourContext,
+            userLanguage: language,
+            packageCatalog,
+          }),
+        });
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to get AI response');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.text) {
+            replyText = data.text;
+          }
+        }
+      } catch (networkErr) {
+        console.warn('API fetch error, using local travel engine:', networkErr);
+      }
+
+      // If the API was unavailable or returned non-JSON, provide verified local travel knowledge answer
+      if (!replyText) {
+        replyText = generateLocalKnowledgeReply(text, language === 'bn' ? 'bn' : 'en', activeTourContext);
       }
 
       const assistantMsg: ChatMessage = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
-        content: data.text,
+        content: replyText,
         timestamp: Date.now(),
       };
 
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (err: any) {
       console.error('Chat error:', err);
+      const fallbackReply = generateLocalKnowledgeReply(text, language === 'bn' ? 'bn' : 'en', activeTourContext);
       const errorMsg: ChatMessage = {
-        id: `err-${Date.now()}`,
+        id: `fallback-${Date.now()}`,
         role: 'assistant',
-        content:
-          language === 'bn'
-            ? `দুঃখিত, তথ্য সংগ্রহে সাময়িক সমস্যা হয়েছে (${err.message || 'নেটওয়ার্ক সংযোগ পরীক্ষা করুন'})। সরাসরি আমাদের হেল্পলাইন বা হোয়াটসঅ্যাপে যোগাযোগ করতে পারেন: +880 1812-345678`
-            : `Sorry, there was a temporary issue (${err.message || 'Check network connection'}). Feel free to reach our team directly via WhatsApp: +880 1812-345678`,
+        content: fallbackReply,
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, errorMsg]);
