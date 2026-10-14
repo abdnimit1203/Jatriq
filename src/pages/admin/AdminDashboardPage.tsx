@@ -318,16 +318,20 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
         )}
 
-        {/* Demo Security Banner */}
-        <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-900 flex items-start gap-3">
-          <ShieldAlert className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <span className="font-bold block uppercase tracking-wider text-[11px] text-amber-800 font-mono">
-              Demo Panel &middot; Client-Side Storage Notice
-            </span>
-            <p className="mt-0.5 leading-relaxed text-[11px] text-amber-800/90">
-              This admin panel demonstrates how your agency can manage tour packages and settings without coding. Changes are stored in your browser's <code>localStorage</code> and sync instantly to the public view during this demo session. To publish new packages to your live Netlify site, use the <strong>JSON Export</strong> tool.
-            </p>
+        {/* Live Firestore Cloud Database Status Banner */}
+        <div className="mb-6 bg-emerald-900 text-white rounded-xl p-4 text-xs shadow-md flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-emerald-800 text-emerald-300 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-bold block uppercase tracking-wider text-[11px] text-emerald-300 font-mono">
+                Live Firestore Database Active
+              </span>
+              <p className="mt-0.5 leading-relaxed text-[11px] text-emerald-100">
+                All package additions, edits, and agency configurations sync in real-time to your secure Firebase Firestore cloud database.
+              </p>
+            </div>
           </div>
         </div>
 

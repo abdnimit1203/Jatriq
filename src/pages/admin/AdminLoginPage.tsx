@@ -64,44 +64,13 @@ export const AdminLoginPage: React.FC = () => {
           </h2>
           <p className="mt-1.5 text-sm text-stone-600">
             {language === 'bn'
-              ? 'ট্যুর প্যাকেজ ব্যবস্থাপনা ও JSON ডেটা কন্ট্রোল ডেমো'
-              : 'Package management & JSON import/export demo'}
+              ? 'ট্যুর প্যাকেজ ব্যবস্থাপনা ও ফায়ারস্টোর ডেটা কন্ট্রোল'
+              : 'Tour package management & Firestore database control'}
           </p>
         </div>
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
-        {/* Security Limitation & Demo Credentials Hint Box */}
-        <div className="mb-5 bg-amber-50/90 border border-amber-200/90 rounded-2xl p-4 sm:p-5 text-sm text-amber-950 shadow-xs flex items-start gap-3.5">
-          <ShieldAlert className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-          <div className="space-y-2 flex-1">
-            <div className="flex items-center justify-between">
-              <span className="font-bold uppercase tracking-wider text-xs text-amber-900 font-mono">
-                DEMO CREDENTIALS / ডেমো তথ্য
-              </span>
-              <span className="text-[11px] bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded-md font-semibold">
-                Demo Only
-              </span>
-            </div>
-            <p className="leading-relaxed text-xs sm:text-sm text-amber-900/95">
-              {language === 'bn'
-                ? 'এটি একটি ফ্রন্টএন্ড ডেমো। লগইন করতে নিচের তথ্যগুলো ব্যবহার করুন:'
-                : 'This is a frontend demonstration. Enter the demo credentials below to evaluate:'}
-            </p>
-            {/* Clear Credential Hints */}
-            <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-xs">
-              <div className="bg-white/80 p-2 rounded-lg border border-amber-200">
-                <span className="text-[10px] uppercase text-amber-700 block font-sans font-semibold">Username hint:</span>
-                <span className="font-bold text-stone-900">admin</span>
-              </div>
-              <div className="bg-white/80 p-2 rounded-lg border border-amber-200">
-                <span className="text-[10px] uppercase text-amber-700 block font-sans font-semibold">Password hint:</span>
-                <span className="font-bold text-stone-900">admin</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="bg-white py-8 px-6 sm:px-10 shadow-xl shadow-stone-200/60 rounded-2xl border border-stone-200/90">
           {error && (
             <div className="mb-5 bg-red-50 border border-red-200 text-red-700 p-3.5 rounded-xl text-sm flex items-start gap-2.5">

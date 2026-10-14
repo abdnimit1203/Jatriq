@@ -1,72 +1,39 @@
-# Implementation Plan: Firebase Firestore Database Integration
+# Implementation Plan - Admin Panel Redesign, Bug Fixes & AI Per-Field Translation
 
-Integrate Google Firebase Firestore into Jatriq Tour Operator to persist all tour packages, site configurations, and customer booking inquiries in real-time, connecting seamlessly to your existing Firebase Project.
-
----
-
-## 1. What You Need to Provide
-
-To connect your existing Firebase project, you only need to provide:
-- **Firebase Project ID**: The unique ID of your project from the [Firebase Console](https://console.firebase.google.com/) (found in Project Settings > General, e.g. `my-jatriq-project` or `tour-agency-89abc`).
-*Note: You do NOT need to manually copy API keys, download config files, or edit database code. AI Studio will automatically configure and link the project credentials once you provide the Project ID.*
+## User Requests & Bug Reports Addressed
+1. **Featured button bug**: Toggling featured/unfeatured currently causes sample data to disappear or wipe out. Fix state management and ensure sample 6 packages are persistently saved and injected into Firebase / data context.
+2. **Category Management**: Add a dedicated Category Setting option in the admin panel so admins can manage tour categories.
+3. **Admin Panel Redesign (Desktop Sidebar)**: Redesign the admin panel with a clean professional desktop sidebar layout (Overview, Packages, Categories, Bookings, Settings) and responsive drawer.
+4. **Per-Field AI Translation**: Add "ENG" / "বাang" translation buttons next to each text field in the package editor modal for independent per-field translation using Gemini API.
 
 ---
 
-## 2. Architecture & Data Collections
+## Proposed Changes
 
-The application will store data in three primary Firestore collections:
+### 1. Data Context & Sample Packages (`src/context/DataContext.tsx`)
+- Ensure the 6 sample tour packages (Sylhet, Cox's Bazar, Bandarban, Sundarbans, Sajek, Saint Martin) are initialized correctly in Firestore / localStorage.
+- Fix the featured toggle handler so updating the `isFeatured` flag updates only the targeted package without resetting or clearing other packages.
+- Add category management state (list of categories, add/edit/delete category).
 
-```
-Firestore Database
-├── packages/              # All active tour packages
-│   ├── {packageId}        # Title, pricing, itinerary, inclusions, 3 gallery images, SEO slug
-├── site_config/           # Agency settings document
-│   └── main_config        # Agency name, phone, WhatsApp number, announcement banner, email
-└── bookings/              # Customer tour reservations & booking inquiries
-    └── {bookingId}        # Customer name, phone, tour slug, travel date, guests, status
-```
+### 2. Admin Panel Layout Redesign (`src/pages/admin/AdminDashboardPage.tsx` & layout components)
+- Create a professional sidebar navigation layout for desktop:
+  - Sidebar: Overview (Dashboard stats), Tour Packages, Categories, Bookings, Settings.
+  - Header: Breadcrumbs / Page title, Quick actions, Admin user profile, Language / Back to site.
+- Mobile responsive drawer toggle.
 
----
+### 3. Category Management (`src/pages/admin/AdminCategoriesTab.tsx` or section)
+- Add a dedicated tab/section in the admin panel to view, add, and remove package categories (e.g., Hill Tracts, Sea Beach, Heritage, Sundarbans).
 
-## 3. Implementation Steps
-
-### Step 1: Firebase Provisioning via AI Studio Tooling
-- Prompt the user to enter their **Firebase Project ID**.
-- Trigger the interactive Firebase Setup flow using `show_aistudio_ui` / `set_up_firebase` with the specified `project_id` and `platform: "web"`.
-- Verify terms acceptance and provision the database automatically.
-- AI Studio generates `firebase-applet-config.json` containing the environment credentials.
-
-### Step 2: Firebase Client SDK Setup
-- Install the official `firebase` npm package (`npm i firebase`).
-- Create `src/lib/firebase.ts` to initialize Firebase App, Firestore instance, and Auth helpers with safety guards for offline fallback.
-
-### Step 3: Security Rules (`firestore.rules`)
-- Write production-grade security rules:
-  - **`packages` collection**: Anyone can read (`allow read: if true`). Only authorized admin can create, update, or delete packages.
-  - **`site_config` collection**: Public read access for website visitors; write access restricted to admin.
-  - **`bookings` collection**: Public customers can submit booking forms (`allow create: if true`); read and manage access restricted to admin.
-- Deploy rules using the automated deployment tool.
-
-### Step 4: Real-Time Data Synchronization (`DataContext.tsx`)
-- Enhance `DataContext.tsx` to subscribe to Firestore via `onSnapshot`:
-  - Automatically loads cloud packages from Firestore on startup.
-  - When an admin adds, edits, or deletes a tour package, changes sync instantly across all visitor browsers.
-  - Keeps local caching active so the app remains fast and responsive even with weak mountain connectivity.
-  - One-click "Seed Firestore" button in Admin Dashboard to migrate default sample packages into the cloud database with 1 click.
-
-### Step 5: Customer Booking Submission (`BookingPage.tsx`)
-- Connect the booking form directly to Firestore's `bookings` collection.
-- When a customer submits a booking:
-  - Automatically generates a unique booking reference ID.
-  - Saves customer name, WhatsApp number, email, chosen tour package, date, and group size to Firestore.
-  - Displays instant confirmation and opens the direct WhatsApp message with pre-filled details.
-- Add a "Bookings & Inquiries" viewer tab in `AdminDashboardPage.tsx` so the tour operator can review and manage customer reservations in real-time.
+### 4. Per-Field AI Translation (`src/pages/admin/AdminPackageFormModal.tsx`)
+- For fields like Title, Description, Inclusions, Itinerary days, add small inline action buttons ("ENG" | "বাং") next to input labels or fields.
+- Clicking the button calls a backend server endpoint `/api/translate-field` using `@google/genai` (`gemini-3.8-flash`) to translate the specific text field between English and Bengali instantly without affecting other fields.
 
 ---
 
-## 4. Verification & Testing
-
-1. **Connection Test**: Validate Firebase initialization against your Project ID.
-2. **Package Cloud Sync**: Add a new tour package in the Admin panel and verify it immediately appears on the public website and in Firestore.
-3. **Booking Flow**: Submit a sample booking on `/booking` and verify the document is saved into Firestore and viewable in the Admin panel.
-4. **Offline Resilience**: Verify the website still loads smoothly with fallback data if network access is interrupted.
+## Verification Plan
+- **Automated Build/Lint**: Run `compile_applet` and `lint_applet` to verify zero TypeScript or syntax errors.
+- **Manual Verification in Preview**:
+  - Test toggling featured status on packages in the admin dashboard and ensure data persists.
+  - Test category creation and assignment.
+  - Test the new desktop sidebar admin panel layout.
+  - Test per-field "ENG" / "বাং" AI translation buttons in package form modal.

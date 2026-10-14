@@ -212,6 +212,65 @@ export const AdminPackageFormModal: React.FC<AdminPackageFormModalProps> = ({
     setFormData({ ...formData, itinerary: current });
   };
 
+  // Per-field translation handler requested by user: ENG / বাং buttons next to each field
+  const handleTranslateSingleField = async (
+    fieldKey: 'title' | 'shortDescription' | 'detailedDescription' | 'destination' | 'accommodation' | 'transport' | 'departurePoint',
+    sourceLang: 'bn' | 'en'
+  ) => {
+    const targetLang = sourceLang === 'bn' ? 'en' : 'bn';
+    const sourceText = formData[fieldKey]?.[sourceLang];
+    if (!sourceText || !sourceText.trim()) {
+      setTranslateErrorMsg(`Please enter text in ${sourceLang === 'bn' ? 'Bangla' : 'English'} first.`);
+      setTimeout(() => setTranslateErrorMsg(null), 3000);
+      return;
+    }
+
+    setIsTranslating(true);
+    setTranslateErrorMsg(null);
+    setTranslateSuccessMsg(null);
+
+    try {
+      const customKey = localStorage.getItem('jatriq_custom_gemini_api_key');
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (customKey && customKey.trim()) {
+        headers['x-custom-api-key'] = customKey.trim();
+      }
+
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          fields: { [fieldKey]: sourceText },
+          sourceLang,
+          targetLang,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Translation failed');
+      }
+
+      const translated = data.translations?.[fieldKey];
+      if (translated) {
+        setFormData((prev) => ({
+          ...prev,
+          [fieldKey]: {
+            ...(prev[fieldKey] || { bn: '', en: '' }),
+            [targetLang]: translated,
+          },
+        }));
+        setTranslateSuccessMsg(`Translated field to ${targetLang === 'bn' ? 'বাং' : 'ENG'} successfully!`);
+        setTimeout(() => setTranslateSuccessMsg(null), 3000);
+      }
+    } catch (err: any) {
+      setTranslateErrorMsg(err.message || 'Translation error');
+      setTimeout(() => setTranslateErrorMsg(null), 4000);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   // AI Auto-Translation Handler
   const handleAutoTranslate = async (sourceLang: 'bn' | 'en', targetLang: 'en' | 'bn') => {
     setIsTranslating(true);
@@ -611,9 +670,21 @@ export const AdminPackageFormModal: React.FC<AdminPackageFormModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Title (Bangla) <span className="text-red-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-stone-700">
+                      Title (Bangla) <span className="text-red-500">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleTranslateSingleField('title', 'bn')}
+                      disabled={isTranslating}
+                      className="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                      title="Translate Bangla title to English"
+                    >
+                      <Sparkles className="w-3 h-3 text-emerald-600" />
+                      <span>বাং ➔ ENG</span>
+                    </button>
+                  </div>
                   <input
                     type="text"
                     required
@@ -628,9 +699,21 @@ export const AdminPackageFormModal: React.FC<AdminPackageFormModalProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Title (English) <span className="text-red-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-stone-700">
+                      Title (English) <span className="text-red-500">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleTranslateSingleField('title', 'en')}
+                      disabled={isTranslating}
+                      className="text-[10px] bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-1.5 py-0.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                      title="Translate English title to Bangla"
+                    >
+                      <Sparkles className="w-3 h-3 text-amber-700" />
+                      <span>ENG ➔ বাং</span>
+                    </button>
+                  </div>
                   <input
                     type="text"
                     required
@@ -901,9 +984,21 @@ export const AdminPackageFormModal: React.FC<AdminPackageFormModalProps> = ({
               {/* Short Descriptions */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Short Description (Bangla)
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-stone-700">
+                      Short Description (Bangla)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleTranslateSingleField('shortDescription', 'bn')}
+                      disabled={isTranslating}
+                      className="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                      title="Translate Bangla short desc to English"
+                    >
+                      <Sparkles className="w-3 h-3 text-emerald-600" />
+                      <span>বাং ➔ ENG</span>
+                    </button>
+                  </div>
                   <textarea
                     rows={2}
                     value={formData.shortDescription?.bn || ''}
@@ -921,9 +1016,21 @@ export const AdminPackageFormModal: React.FC<AdminPackageFormModalProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Short Description (English)
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-stone-700">
+                      Short Description (English)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleTranslateSingleField('shortDescription', 'en')}
+                      disabled={isTranslating}
+                      className="text-[10px] bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-1.5 py-0.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                      title="Translate English short desc to Bangla"
+                    >
+                      <Sparkles className="w-3 h-3 text-amber-700" />
+                      <span>ENG ➔ বাং</span>
+                    </button>
+                  </div>
                   <textarea
                     rows={2}
                     value={formData.shortDescription?.en || ''}
@@ -945,9 +1052,21 @@ export const AdminPackageFormModal: React.FC<AdminPackageFormModalProps> = ({
               {/* Detailed Descriptions */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Detailed Description (Bangla)
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-stone-700">
+                      Detailed Description (Bangla)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleTranslateSingleField('detailedDescription', 'bn')}
+                      disabled={isTranslating}
+                      className="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                      title="Translate Bangla detailed desc to English"
+                    >
+                      <Sparkles className="w-3 h-3 text-emerald-600" />
+                      <span>বাং ➔ ENG</span>
+                    </button>
+                  </div>
                   <textarea
                     rows={3}
                     value={formData.detailedDescription?.bn || ''}
@@ -965,9 +1084,21 @@ export const AdminPackageFormModal: React.FC<AdminPackageFormModalProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Detailed Description (English)
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-stone-700">
+                      Detailed Description (English)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleTranslateSingleField('detailedDescription', 'en')}
+                      disabled={isTranslating}
+                      className="text-[10px] bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-1.5 py-0.5 rounded flex items-center gap-1 transition-colors cursor-pointer"
+                      title="Translate English detailed desc to Bangla"
+                    >
+                      <Sparkles className="w-3 h-3 text-amber-700" />
+                      <span>ENG ➔ বাং</span>
+                    </button>
+                  </div>
                   <textarea
                     rows={3}
                     value={formData.detailedDescription?.en || ''}

@@ -129,8 +129,7 @@ export const AIAssistantWidget: React.FC = () => {
         <button
           type="button"
           onClick={() => openAssistant()}
-         
-          className="fixed bottom-26 right-3 sm:bottom-22 sm:right-6 z-40 group flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-emerald-900/90 hover:bg-emerald-950 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 border border-emerald-600/30 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500"
+          className="fixed bottom-15 right-4 sm:bottom-19 sm:right-6 z-40 group flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-emerald-900/95 hover:bg-emerald-950 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 border border-emerald-600/30 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500"
           aria-label="Open AI Travel Assistant"
         >
           <div className="relative">

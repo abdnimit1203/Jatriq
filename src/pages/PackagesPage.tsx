@@ -98,7 +98,7 @@ export const PackagesPage: React.FC = () => {
         if (!a.featured && b.featured) return 1;
         return 0;
       });
-  }, [filters]);
+  }, [packages, filters]);
 
   const handleReset = () => {
     setFilters({

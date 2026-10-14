@@ -172,10 +172,8 @@ export const Footer: React.FC = () => {
             </a>
           </div>
 
-          <div className="text-center md:text-right text-stone-400 max-w-xl">
-            <span className="inline-block bg-stone-800/80 px-2.5 py-1 rounded text-stone-400 text-[11px]">
-              {t.common.demoNotice}
-            </span>
+          <div className="text-center md:text-right text-stone-400 max-w-xl text-xs">
+            <span>Official Tour Operator Platform & Booking System</span>
           </div>
         </div>
       </div>

@@ -174,20 +174,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
               {t.bookingPage.successMessage}
             </p>
 
-            {submissionResult.isDemoNotice && (
-              <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 text-left flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-semibold block mb-0.5">
-                    {language === 'bn' ? 'ডেমো নম্বর বিজ্ঞপ্তি' : 'Agency Demo Notice'}
-                  </span>
-                  {language === 'bn'
-                    ? 'আপনার সাইটটি বর্তমানে ডেমো ফোন নম্বরে সেট করা আছে। আসল বুকিং বার্তা পেতে siteConfig.ts ফাইলে আসল হোয়াটসঅ্যাপ নম্বর যুক্ত করুন।'
-                    : 'The site is currently in demo mode. Replace the placeholder number in siteConfig.ts to receive customer inquiries on your agency phone.'}
-                </div>
-              </div>
-            )}
-
             {/* Direct Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
               <a

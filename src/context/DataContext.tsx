@@ -27,6 +27,9 @@ interface DataContextType {
   packages: TourPackage[];
   config: SiteConfig;
   isFirebaseActive: boolean;
+  categories: string[];
+  addCategory: (cat: string) => void;
+  deleteCategory: (cat: string) => void;
   addPackage: (pkg: TourPackage) => Promise<void>;
   updatePackage: (pkg: TourPackage) => Promise<void>;
   deletePackage: (id: string) => Promise<void>;
@@ -83,6 +86,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (cloudPackages.length > 0) {
         setPackages(cloudPackages.map(normalizePackage));
         setIsFirebaseActive(true);
+      } else {
+        // If Firestore packages collection is empty, automatically seed the 6 default packages
+        seedDefaultPackagesToFirestore(defaultPackages.map(normalizePackage)).then(() => {
+          setIsFirebaseActive(true);
+        }).catch((err) => {
+          console.warn('Auto-seed packages note:', err);
+        });
       }
     });
 
@@ -214,12 +224,34 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: true, count };
   };
 
+  const [categories, setCategories] = useState<string[]>([
+    'hill-tracts',
+    'beach',
+    'tea-gardens',
+    'wildlife',
+    'island',
+  ]);
+
+  const addCategory = (cat: string) => {
+    const slug = cat.toLowerCase().trim().replace(/\s+/g, '-');
+    if (slug && !categories.includes(slug)) {
+      setCategories((prev) => [...prev, slug]);
+    }
+  };
+
+  const deleteCategory = (cat: string) => {
+    setCategories((prev) => prev.filter((c) => c !== cat));
+  };
+
   return (
     <DataContext.Provider
       value={{
         packages,
         config,
         isFirebaseActive,
+        categories,
+        addCategory,
+        deleteCategory,
         addPackage,
         updatePackage,
         deletePackage,
