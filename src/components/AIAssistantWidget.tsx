@@ -129,24 +129,32 @@ export const AIAssistantWidget: React.FC = () => {
         <button
           type="button"
           onClick={() => openAssistant()}
-          className="fixed bottom-24 right-4 sm:right-6 z-40 group flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-emerald-800 to-teal-800 hover:from-emerald-900 hover:to-teal-900 text-white rounded-full shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 border border-emerald-600/40 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500"
+         
+          className="fixed bottom-26 right-3 sm:bottom-22 sm:right-6 z-40 group flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-emerald-900/90 hover:bg-emerald-950 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 border border-emerald-600/30 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500"
           aria-label="Open AI Travel Assistant"
         >
           <div className="relative">
-            <Bot className="w-5 h-5 text-emerald-200" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full" />
+            <Bot className="w-4 h-4 text-emerald-200" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full animate-ping" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full" />
           </div>
-          <span className="font-bold text-xs sm:text-sm tracking-wide">
-            {language === 'bn' ? 'এআই গাইড' : 'AI Assistant'}
-          </span>
-          <Sparkles className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform" />
+          
+<span className="font-semibold text-[11px] sm:text-xs tracking-normal sm:tracking-wide">
+  <span className="sm:hidden">
+    {language === 'bn' ? 'এআই' : 'AI'}
+  </span>
+  <span className="hidden sm:inline">
+    {language === 'bn' ? 'এআই গাইড' : 'AI Assistant'}
+  </span>
+</span>
+
+          <Sparkles className="w-3.5 h-3.5 text-amber-300 group-hover:rotate-12 transition-transform" />
         </button>
       )}
 
       {/* Floating Chat Modal / Drawer */}
       {isOpen && (
-        <div className="fixed inset-x-3 bottom-3 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-[420px] max-h-[92vh] sm:max-h-[620px] h-[580px] z-50 flex flex-col bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-stone-200 overflow-hidden animate-in slide-in-from-bottom-5 duration-250">
+        <div className="fixed inset-x-3 bottom-3 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-[400px] max-h-[85vh] sm:max-h-[580px] h-[min(520px,calc(100dvh-5rem))] sm:h-[560px] z-50 flex flex-col bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-stone-200 overflow-hidden animate-in slide-in-from-bottom-5 duration-250">
           {/* Header */}
           <div className="p-4 bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white flex items-center justify-between shrink-0 shadow-sm">
             <div className="flex items-center gap-3">

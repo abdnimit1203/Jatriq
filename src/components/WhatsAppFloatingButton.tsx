@@ -21,7 +21,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-30 flex items-center gap-3">
+      <div className="fixed bottom-16 right-4 sm:bottom-6 sm:right-6 z-30 flex items-center gap-3">
         {showTooltip && (
           <div className="hidden sm:block bg-stone-900 text-stone-100 text-xs px-3 py-1.5 rounded-lg shadow-lg border border-stone-800 whitespace-nowrap animate-in fade-in duration-150">
             {language === 'bn' ? 'হোয়াটসঅ্যাপে তাৎক্ষণিক সহায়তা নিন' : 'Chat directly with tour specialists'}
@@ -39,10 +39,10 @@ export const WhatsAppFloatingButton: React.FC = () => {
           onClick={handleClick}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
-          className="flex items-center justify-center w-14 h-14 sm:w-15 sm:h-15 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xl hover:shadow-emerald-700/50 hover:scale-108 active:scale-95 transition-all focus:outline-hidden focus-visible:ring-4 focus-visible:ring-emerald-700/40 ring-2 ring-white/80"
+          className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl hover:shadow-emerald-700/50 hover:scale-105 active:scale-95 transition-all focus:outline-hidden focus-visible:ring-4 focus-visible:ring-emerald-700/40 ring-2 ring-white/80"
           aria-label={t.common.whatsappChat}
         >
-          <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8" />
+          <MessageCircle className="w-4 h-4 sm:w-6 sm:h-6" />
         </a>
       </div>
 

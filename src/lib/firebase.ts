@@ -13,21 +13,13 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 import { TourPackage, SiteConfig } from '../types';
-
-export const firebaseConfig = {
-  apiKey: 'AIzaSyAgtKKPvomRMwcL5sdt5k205L5_B33nwDE',
-  authDomain: 'jatriq-abd.firebaseapp.com',
-  projectId: 'jatriq-abd',
-  storageBucket: 'jatriq-abd.firebasestorage.app',
-  messagingSenderId: '987790996736',
-  appId: '1:987790996736:web:d126f9a94f3738a49cafe5',
-  measurementId: 'G-GD795EZ9RK',
-};
+import firebaseConfig from '../../firebase-applet-config.json';
 
 // Initialize Firebase App safely (singleton)
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-export const db = getFirestore(app);
+// @ts-ignore: firestoreDatabaseId may be undefined in the config
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
 export interface FirestoreBooking {
   id: string;

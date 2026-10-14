@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import Marquee from 'react-fast-marquee';
+import ReactFastMarquee from 'react-fast-marquee';
+const Marquee = (ReactFastMarquee as any).default || ReactFastMarquee;
 import { X, Sparkles, Tag } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';

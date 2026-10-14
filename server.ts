@@ -174,12 +174,14 @@ Currently, we do not have a scheduled regular group package for **${destName}**.
   }
 
   // 2. Inquiring if package exists for existing destinations (Banglish / Bangla)
-  const isAskingSajek = query.includes('sajek') || query.includes('সাজেক');
-  const isAskingCox = query.includes('cox') || query.includes('bazar') || query.includes('কক্সবাজার') || query.includes('kox');
-  const isAskingSylhet = query.includes('sylhet') || query.includes('sreemangal') || query.includes('সিলেট') || query.includes('শ্রীমঙ্গল');
-  const isAskingSundarban = query.includes('sundarban') || query.includes('shundorbon') || query.includes('সুন্দরবন');
-  const isAskingBandarban = query.includes('bandarban') || query.includes('বান্দরবান') || query.includes('nilgiri');
-  const isAskingPackage = query.includes('package') || query.includes('প্যাকেজ') || query.includes('price') || query.includes('dam') || query.includes('koto') || query.includes('ache') || query.includes('ase') || query.includes('cost');
+  const isAskingSajek = query.includes('sajek') || query.includes('সাজেক') || query.includes('sajak');
+  const isAskingCox = query.includes('cox') || query.includes('bazar') || query.includes('কক্সবাজার') || query.includes('kox') || query.includes('coxbazar');
+  const isAskingSylhet = query.includes('sylhet') || query.includes('sreemangal') || query.includes('সিলেট') || query.includes('শ্রীমঙ্গল') || query.includes('srimangal') || query.includes('ratargul');
+  const isAskingSundarban = query.includes('sundarban') || query.includes('shundorbon') || query.includes('সুন্দরবন') || query.includes('sundorban');
+  const isAskingBandarban = query.includes('bandarban') || query.includes('বান্দরবান') || query.includes('nilgiri') || query.includes('নীলগিরি');
+  const isAskingPackage = query.includes('package') || query.includes('প্যাকেজ') || query.includes('price') || query.includes('dam') || query.includes('koto') || query.includes('ache') || query.includes('ase') || query.includes('cost') || query.includes('taka') || query.includes('টাকা') || query.includes('খরচ') || query.includes('khoroch') || query.includes('jaoyar') || query.includes('jabo');
+  const isAskingFamily = query.includes('family') || query.includes('পরিবার') || query.includes('kids') || query.includes('bachha') || query.includes('parents');
+  const isGeneralHelp = query.includes('help') || query.includes('সাহায্য') || query.includes('ki ki') || query.includes('ki ache') || query.includes('list');
 
   if (isAskingPackage && isAskingSajek) {
     if (lang === 'bn') {

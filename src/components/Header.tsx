@@ -101,8 +101,9 @@ export const Header: React.FC = () => {
 
             {/* Zone 3: Actions (Desktop) + Mobile Hamburger Menu Toggle */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <LanguageSwitcher className="hidden md:inline-flex" />
-
+            <span className="hidden md:inline-flex" >
+            <LanguageSwitcher/>
+            </span>
               {/* Book Now button: shown on desktop, accessible in mobile drawer */}
               <Link
                 to="/booking"
@@ -155,8 +156,7 @@ export const Header: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-
-            {/* Language Switcher Bar */}
+            {/* Language Switcher in Mobile Hamburger Drawer */}
             <div className="px-5 py-3 bg-stone-100/70 border-b border-stone-200 flex items-center justify-between">
               <span className="text-xs uppercase font-bold tracking-wider text-stone-500 font-mono">
                 {language === 'bn' ? 'ভাষা / Language' : 'Language'}

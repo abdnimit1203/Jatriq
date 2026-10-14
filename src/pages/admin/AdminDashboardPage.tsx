@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useData } from '../../context/DataContext';
@@ -243,10 +243,10 @@ export const AdminDashboardPage: React.FC = () => {
     showNotification(`Package "${target?.title.en || id}" deleted.`);
   };
 
-  const handleConfirmImport = (newPackages: TourPackage[]) => {
-    const res = importPackages(newPackages);
+  const handleConfirmImport = async (newPackages: TourPackage[]) => {
+    const res = await importPackages(newPackages);
     if (res.success) {
-      showNotification(`Successfully imported ${res.count} tour packages!`);
+      showNotification(`Successfully imported ${res.count ?? newPackages.length} tour packages!`);
     }
   };
 
@@ -383,55 +383,57 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* Dashboard Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-stone-200 mb-6 text-xs sm:text-sm font-semibold">
-          <button
-            onClick={() => setActiveTab('packages')}
-            className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 ${
-              activeTab === 'packages'
-                ? 'border-emerald-800 text-emerald-900'
-                : 'border-transparent text-stone-500 hover:text-stone-900'
-            }`}
-          >
-            <Package className="w-4 h-4" />
-            <span>Tour Packages ({packages.length})</span>
-          </button>
+        <div className="overflow-x-auto whitespace-nowrap mb-6 border-b border-stone-200 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold min-w-full">
+            <button
+              onClick={() => setActiveTab('packages')}
+              className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 shrink-0 ${
+                activeTab === 'packages'
+                  ? 'border-emerald-800 text-emerald-900'
+                  : 'border-transparent text-stone-500 hover:text-stone-900'
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              <span>Tour Packages ({packages.length})</span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('json')}
-            className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 ${
-              activeTab === 'json'
-                ? 'border-emerald-800 text-emerald-900'
-                : 'border-transparent text-stone-500 hover:text-stone-900'
-            }`}
-          >
-            <FileJson className="w-4 h-4" />
-            <span>JSON Import / Export</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('json')}
+              className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 shrink-0 ${
+                activeTab === 'json'
+                  ? 'border-emerald-800 text-emerald-900'
+                  : 'border-transparent text-stone-500 hover:text-stone-900'
+              }`}
+            >
+              <FileJson className="w-4 h-4" />
+              <span>JSON Import / Export</span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('agency')}
-            className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 ${
-              activeTab === 'agency'
-                ? 'border-emerald-800 text-emerald-900'
-                : 'border-transparent text-stone-500 hover:text-stone-900'
-            }`}
-          >
-            <Building className="w-4 h-4" />
-            <span>Agency Settings</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('agency')}
+              className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 shrink-0 ${
+                activeTab === 'agency'
+                  ? 'border-emerald-800 text-emerald-900'
+                  : 'border-transparent text-stone-500 hover:text-stone-900'
+              }`}
+            >
+              <Building className="w-4 h-4" />
+              <span>Agency Settings</span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('ai-settings')}
-            className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'ai-settings'
-                ? 'border-emerald-800 text-emerald-900 font-bold'
-                : 'border-transparent text-stone-500 hover:text-stone-900'
-            }`}
-          >
-            <Bot className="w-4 h-4 text-emerald-700" />
-            <span>AI Settings & Key</span>
-            <span className="px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">AI</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('ai-settings')}
+              className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 ${
+                activeTab === 'ai-settings'
+                  ? 'border-emerald-800 text-emerald-900 font-bold'
+                  : 'border-transparent text-stone-500 hover:text-stone-900'
+              }`}
+            >
+              <Bot className="w-4 h-4 text-emerald-700" />
+              <span>AI Settings & Key</span>
+              <span className="px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">AI</span>
+            </button>
+          </div>
         </div>
 
         {/* TAB 1: PACKAGES MANAGEMENT */}

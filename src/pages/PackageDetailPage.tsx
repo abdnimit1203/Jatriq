@@ -499,36 +499,10 @@ export const PackageDetailPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <button
-            type="button"
-            onClick={() =>
-              openAssistant(
-                language === 'bn'
-                  ? `আমি "${getText(tour.title)}" ট্যুর সম্পর্কে জানতে আগ্রহী।`
-                  : `I want to ask about "${getText(tour.title)}" tour.`,
-                tour
-              )
-            }
-            className="inline-flex items-center justify-center p-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-teal-800 text-white font-bold active:scale-95 transition-all shadow-xs"
-            aria-label="Ask AI Assistant"
-            title="Ask AI Assistant"
-          >
-            <Bot className="w-5 h-5 text-emerald-200" />
-          </button>
-
-          <button
-            type="button"
-            onClick={handleWhatsAppDirect}
-            className="inline-flex items-center justify-center p-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold active:scale-95 transition-all"
-            aria-label="Direct WhatsApp Inquiry"
-          >
-            <MessageCircle className="w-5 h-5" />
-          </button>
-
+        <div>
           <Link
             to={`/booking?package=${tour.slug}`}
-            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 transition-all"
+            className="inline-flex items-center gap-1.5 px-5 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm shadow-md active:scale-95 transition-all"
           >
             <span>{t.packageDetails.inquireNow}</span>
           </Link>

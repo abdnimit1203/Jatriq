@@ -13,9 +13,9 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ className = 
     <div
       role="group"
       aria-label="Language selection"
-      className={`inline-flex items-center rounded-full border border-stone-200 bg-stone-100/90 p-0.5 text-xs font-medium text-stone-700 backdrop-blur-sm ${className}`}
+      className={`inline-flex items-center rounded-full border border-stone-200 bg-stone-100/90 p-0.5 text-xs font-medium text-stone-700 backdrop-blur-sm`}
     >
-      <span className="sr-only">Change language</span>
+      <span className="sr-only">Change languages </span>
       <div className="pl-2 pr-1 text-stone-500">
         <Globe className="w-3.5 h-3.5" aria-hidden="true" />
       </div>
