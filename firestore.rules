@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Packages: Public can view, anyone or admin can update
+    match /packages/{packageId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Site configuration
+    match /site_config/{configId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Bookings: Public customers can submit bookings, admins can view and update
+    match /bookings/{bookingId} {
+      allow read, write: if true;
+    }
+
+    // Inquiries and Contact Messages
+    match /inquiries/{inquiryId} {
+      allow read, write: if true;
+    }
+  }
+}

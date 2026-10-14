@@ -4,6 +4,7 @@ import { AnnouncementBar } from '../components/AnnouncementBar';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { WhatsAppFloatingButton } from '../components/WhatsAppFloatingButton';
+import { AIAssistantWidget } from '../components/AIAssistantWidget';
 
 export const RootLayout: React.FC = () => {
   const { pathname } = useLocation();
@@ -22,6 +23,7 @@ export const RootLayout: React.FC = () => {
       </main>
       <Footer />
       <WhatsAppFloatingButton />
+      <AIAssistantWidget />
     </div>
   );
 };

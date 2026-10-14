@@ -136,7 +136,7 @@ export function validateTourPackagesJson(parsedData: unknown): ValidationResult 
         text: { bn: '৩ দিন / ২ রাত', en: '3 Days / 2 Nights' },
       },
       priceBDT: Number(pkg.priceBDT) || 5000,
-      coverImage: String(pkg.coverImage || '/src/assets/images/hero_sajek_sunrise_1791788897775.jpg'),
+      coverImage: String(pkg.coverImage || '/images/hero_sajek_sunrise_1791788897775.jpg'),
       galleryImages: Array.isArray(pkg.galleryImages) ? (pkg.galleryImages as string[]) : [],
       itinerary: Array.isArray(pkg.itinerary) ? (pkg.itinerary as any) : [],
       included: (pkg.included as any) || { bn: ['পরিবহন ও হোটেল'], en: ['Transport and hotel'] },

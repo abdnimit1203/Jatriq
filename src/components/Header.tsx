@@ -99,31 +99,31 @@ export const Header: React.FC = () => {
               })}
             </nav>
 
-            {/* Zone 3: Actions + Mobile Hamburger Menu Toggle */}
+            {/* Zone 3: Actions (Desktop) + Mobile Hamburger Menu Toggle */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <LanguageSwitcher className="hidden sm:inline-flex" />
+              <LanguageSwitcher className="hidden md:inline-flex" />
 
-              {/* Book Now button: shown on tablet/desktop, compact on small screens */}
+              {/* Book Now button: shown on desktop, accessible in mobile drawer */}
               <Link
                 to="/booking"
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-stone-50 bg-emerald-800 hover:bg-emerald-900 active:bg-emerald-950 rounded-full shadow-md hover:shadow-lg transition-all whitespace-nowrap shrink-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-700"
+                className="hidden md:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-stone-50 bg-emerald-800 hover:bg-emerald-900 active:bg-emerald-950 rounded-full shadow-md hover:shadow-lg transition-all whitespace-nowrap shrink-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-700"
               >
                 <span>{t.nav.bookNow}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
               </Link>
 
-              {/* Mobile hamburger menu toggle */}
+              {/* Mobile hamburger menu toggle - always cleanly visible without crowding */}
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-stone-300/80 bg-white hover:bg-stone-100 active:bg-stone-200 text-stone-800 shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-700 transition-all cursor-pointer"
+                className="md:hidden inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-stone-300/80 bg-white hover:bg-stone-100 active:bg-stone-200 text-stone-800 shadow-xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-700 transition-all cursor-pointer"
                 aria-expanded={mobileMenuOpen}
                 aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               >
                 {mobileMenuOpen ? (
-                  <X className="w-6 h-6 text-stone-900" aria-hidden="true" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-stone-900" aria-hidden="true" />
                 ) : (
-                  <Menu className="w-6 h-6 text-stone-900" aria-hidden="true" />
+                  <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-stone-900" aria-hidden="true" />
                 )}
               </button>
             </div>

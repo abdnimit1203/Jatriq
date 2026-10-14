@@ -15,9 +15,12 @@ import {
   Navigation,
   Sparkles,
   Flag,
+  Bot,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
+import { useAIAssistant } from '../context/AIAssistantContext';
+import { resolveImageUrl, handleImageFallback } from '../lib/imageUtils';
 import { TourPackage } from '../types';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { TourPackageCard } from '../components/TourPackageCard';
@@ -28,6 +31,7 @@ export const PackageDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { t, getText, formatPrice, formatNumber, language } = useLanguage();
   const { packages, config } = useData();
+  const { openAssistant } = useAIAssistant();
 
   const tour = packages.find((p) => p.slug === slug);
 
@@ -55,9 +59,12 @@ export const PackageDetailPage: React.FC = () => {
     );
   }
 
-  // Combine cover and gallery for interactive selection
-  const allImages = [tour.coverImage, ...(tour.galleryImages || [])];
-  const activeImage = allImages[activeImageIndex] || tour.coverImage;
+  // Combine cover and gallery for interactive selection with normalized URLs
+  const rawImages = [tour.coverImage, ...(tour.galleryImages || [])].filter(Boolean);
+  const allImages = (rawImages.length > 0 ? rawImages : ['/images/hero_sajek_sunrise_1791788897775.jpg']).map((img) =>
+    resolveImageUrl(img)
+  );
+  const activeImage = allImages[activeImageIndex] || allImages[0];
 
   // Related tours in same or different category
   const relatedTours: TourPackage[] = packages
@@ -120,6 +127,7 @@ export const PackageDetailPage: React.FC = () => {
               src={activeImage}
               alt={getText(tour.title)}
               referrerPolicy="no-referrer"
+              onError={(e) => handleImageFallback(e, 'sajek')}
               className="w-full h-full object-cover object-center transition-all duration-300"
             />
           </div>
@@ -140,6 +148,7 @@ export const PackageDetailPage: React.FC = () => {
                   src={img}
                   alt={`Gallery ${idx + 1}`}
                   referrerPolicy="no-referrer"
+                  onError={(e) => handleImageFallback(e, 'sajek')}
                   className="w-full h-full object-cover"
                 />
               </button>
@@ -384,6 +393,24 @@ export const PackageDetailPage: React.FC = () => {
                   <MessageCircle className="w-4.5 h-4.5 text-emerald-700" />
                   <span>{t.packageDetails.instantWhatsApp}</span>
                 </button>
+
+                {/* AI Assistant Quick Inquire Button */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    openAssistant(
+                      language === 'bn'
+                        ? `আমি "${getText(tour.title)}" ট্যুর সম্পর্কে বিস্তারিত জানতে চাই। এর সেরা আকর্ষণ ও প্যাকিং নির্দেশনাসহ জানিয়ে দিন।`
+                        : `Tell me more about the "${getText(tour.title)}" tour, its key highlights, convoy schedules, and what I should prepare.`,
+                      tour
+                    )
+                  }
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-900 via-teal-900 to-stone-900 hover:from-black hover:to-emerald-950 text-white font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-sm hover:shadow-md border border-emerald-700/30"
+                >
+                  <Bot className="w-4 h-4 text-emerald-300" />
+                  <span>{language === 'bn' ? 'ট্যুর নিয়ে এআইকে প্রশ্ন করুন' : 'Ask AI Concierge About Tour'}</span>
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                </button>
               </div>
 
               <div className="pt-4 border-t border-stone-100 space-y-2 text-xs text-stone-500">
@@ -472,7 +499,24 @@ export const PackageDetailPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() =>
+              openAssistant(
+                language === 'bn'
+                  ? `আমি "${getText(tour.title)}" ট্যুর সম্পর্কে জানতে আগ্রহী।`
+                  : `I want to ask about "${getText(tour.title)}" tour.`,
+                tour
+              )
+            }
+            className="inline-flex items-center justify-center p-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-teal-800 text-white font-bold active:scale-95 transition-all shadow-xs"
+            aria-label="Ask AI Assistant"
+            title="Ask AI Assistant"
+          >
+            <Bot className="w-5 h-5 text-emerald-200" />
+          </button>
+
           <button
             type="button"
             onClick={handleWhatsAppDirect}
@@ -484,7 +528,7 @@ export const PackageDetailPage: React.FC = () => {
 
           <Link
             to={`/booking?package=${tour.slug}`}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm shadow-md active:scale-95 transition-all"
+            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 transition-all"
           >
             <span>{t.packageDetails.inquireNow}</span>
           </Link>

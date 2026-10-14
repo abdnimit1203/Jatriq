@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Clock, MapPin, ArrowRight, Compass } from 'lucide-react';
 import { TourPackage } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { resolveImageUrl, handleImageFallback } from '../lib/imageUtils';
 
 interface TourPackageCardProps {
   tourPackage: TourPackage;
@@ -18,10 +19,16 @@ export const TourPackageCard: React.FC<TourPackageCardProps> = ({ tourPackage })
       <div className="relative aspect-16/10 overflow-hidden bg-stone-100">
         {!imageError ? (
           <img
-            src={tourPackage.coverImage}
+            src={resolveImageUrl(tourPackage.coverImage)}
             alt={getText(tourPackage.title)}
             referrerPolicy="no-referrer"
-            onError={() => setImageError(true)}
+            onError={(e) => {
+              handleImageFallback(e, 'sajek');
+              // If second fallback also errors
+              if (e.currentTarget.dataset.triedFallback === 'true') {
+                setImageError(true);
+              }
+            }}
             loading="lazy"
             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />

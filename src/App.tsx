@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { DataProvider } from './context/DataContext';
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
+import { AIAssistantProvider } from './context/AIAssistantContext';
 import { RootLayout } from './layouts/RootLayout';
 import { HomePage } from './pages/HomePage';
 import { PackagesPage } from './pages/PackagesPage';
@@ -42,26 +43,28 @@ export default function App() {
     <DataProvider>
       <LanguageProvider>
         <AdminAuthProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Public Website Routes */}
-              <Route path="/" element={<RootLayout />}>
-                <Route index element={<HomePage />} />
-                <Route path="packages" element={<PackagesPage />} />
-                <Route path="packages/:slug" element={<PackageDetailPage />} />
-                <Route path="destinations" element={<DestinationsPage />} />
-                <Route path="booking" element={<BookingPage />} />
-                <Route path="about" element={<AboutPage />} />
-                <Route path="contact" element={<ContactPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Route>
+          <AIAssistantProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Public Website Routes */}
+                <Route path="/" element={<RootLayout />}>
+                  <Route index element={<HomePage />} />
+                  <Route path="packages" element={<PackagesPage />} />
+                  <Route path="packages/:slug" element={<PackageDetailPage />} />
+                  <Route path="destinations" element={<DestinationsPage />} />
+                  <Route path="booking" element={<BookingPage />} />
+                  <Route path="about" element={<AboutPage />} />
+                  <Route path="contact" element={<ContactPage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Route>
 
-              {/* Admin Panel Routes (Isolated from public layout) */}
-              <Route path="/admin/login" element={<AdminLoginRoute />} />
-              <Route path="/admin" element={<ProtectedAdminRoute />} />
-              <Route path="/admin/dashboard" element={<Navigate to="/admin" replace />} />
-            </Routes>
-          </BrowserRouter>
+                {/* Admin Panel Routes (Isolated from public layout) */}
+                <Route path="/admin/login" element={<AdminLoginRoute />} />
+                <Route path="/admin" element={<ProtectedAdminRoute />} />
+                <Route path="/admin/dashboard" element={<Navigate to="/admin" replace />} />
+              </Routes>
+            </BrowserRouter>
+          </AIAssistantProvider>
         </AdminAuthProvider>
       </LanguageProvider>
     </DataProvider>

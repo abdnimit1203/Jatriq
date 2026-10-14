@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useData } from '../../context/DataContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { useAIAssistant } from '../../context/AIAssistantContext';
 import { TourPackage, SiteConfig } from '../../types';
 import { exportPackagesToJsonFile, downloadSamplePackageJson } from '../../lib/jsonPackageValidator';
 import { AdminPackageFormModal } from './AdminPackageFormModal';
@@ -26,7 +27,22 @@ import {
   CheckCircle2,
   AlertTriangle,
   FileDown,
+  Bot,
+  Sparkles,
+  Key,
+  Eye,
+  EyeOff,
+  Cpu,
+  Info,
+  AlertCircle,
+  Calendar,
+  Database,
+  Phone,
+  MessageSquare,
+  Clock,
+  Check,
 } from 'lucide-react';
+import { fetchBookingsFromFirestore, updateBookingStatusInFirestore, FirestoreBooking } from '../../lib/firebase';
 import { Logo } from '../../components/Logo';
 
 export const AdminDashboardPage: React.FC = () => {
@@ -34,6 +50,7 @@ export const AdminDashboardPage: React.FC = () => {
   const {
     packages,
     config,
+    isFirebaseActive,
     addPackage,
     updatePackage,
     deletePackage,
@@ -42,11 +59,12 @@ export const AdminDashboardPage: React.FC = () => {
     resetPackagesToDefault,
     updateConfig,
     resetConfigToDefault,
+    seedFirestore,
   } = useData();
   const { language, formatPrice, getText } = useLanguage();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState<'packages' | 'json' | 'agency'>('packages');
+  const [activeTab, setActiveTab] = useState<'packages' | 'bookings' | 'json' | 'agency' | 'ai-settings'>('packages');
   const [searchQuery, setSearchQuery] = useState('');
   const [packageModalOpen, setPackageModalOpen] = useState(false);
   const [packageToEdit, setPackageToEdit] = useState<TourPackage | null>(null);
@@ -55,9 +73,126 @@ export const AdminDashboardPage: React.FC = () => {
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
+  // Firestore Bookings state
+  const [bookings, setBookings] = useState<FirestoreBooking[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(false);
+  const [isSeedingFirestore, setIsSeedingFirestore] = useState(false);
+
+  const loadBookings = async () => {
+    setLoadingBookings(true);
+    const data = await fetchBookingsFromFirestore();
+    setBookings(data);
+    setLoadingBookings(false);
+  };
+
+  useEffect(() => {
+    loadBookings();
+  }, []);
+
+  const handleUpdateBookingStatus = async (id: string, status: 'pending' | 'confirmed' | 'cancelled') => {
+    await updateBookingStatusInFirestore(id, status);
+    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
+    showNotification(`Booking status updated to ${status}.`);
+  };
+
+  const handleSeedFirestore = async () => {
+    setIsSeedingFirestore(true);
+    try {
+      const res = await seedFirestore();
+      showNotification(`Successfully seeded ${res.count} tour packages to Firebase Firestore (jatriq-abd)!`);
+    } catch (err: any) {
+      showNotification(`Failed to seed Firestore: ${err.message}`);
+    } finally {
+      setIsSeedingFirestore(false);
+    }
+  };
+
+  // AI Concierge & Multi-Provider Settings
+  const { aiConfig, saveAiConfig, clearAiConfig } = useAIAssistant();
+  const [customApiKeyInput, setCustomApiKeyInput] = useState(() => {
+    try {
+      return localStorage.getItem('jatriq_custom_gemini_api_key') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [selectedProvider, setSelectedProvider] = useState<'auto' | 'gemini' | 'groq' | 'openai'>('auto');
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [isSavingKey, setIsSavingKey] = useState(false);
+  const [aiTestResult, setAiTestResult] = useState<{
+    loading: boolean;
+    ok?: boolean;
+    msg?: string;
+    model?: string;
+    provider?: string;
+    usingCustom?: boolean;
+  } | null>(null);
+
   // Agency Settings local form state
   const [agencyForm, setAgencyForm] = useState<SiteConfig>({ ...config });
   const [agencySavedNotice, setAgencySavedNotice] = useState(false);
+
+  const handleSaveCustomApiKey = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingKey(true);
+    try {
+      const res = await saveAiConfig(customApiKeyInput.trim(), selectedProvider);
+      if (res.success) {
+        showNotification(customApiKeyInput.trim() ? 'AI API key saved securely & active across the site!' : 'Reverted to default free tier.');
+      } else {
+        showNotification(res.message || 'Error saving API key.');
+      }
+    } catch {
+      showNotification('Could not save API key.');
+    } finally {
+      setIsSavingKey(false);
+    }
+  };
+
+  const handleClearCustomApiKey = async () => {
+    setCustomApiKeyInput('');
+    setIsSavingKey(true);
+    await clearAiConfig();
+    setIsSavingKey(false);
+    setAiTestResult(null);
+    showNotification('Cleared custom key. Reverted to default built-in travel knowledge.');
+  };
+
+  const handleTestAiConnection = async () => {
+    setAiTestResult({ loading: true });
+    try {
+      const headers: Record<string, string> = {};
+      if (customApiKeyInput.trim()) {
+        headers['x-custom-api-key'] = customApiKeyInput.trim();
+      }
+
+      const res = await fetch('/api/test-key', { headers });
+      const data = await res.json();
+
+      if (res.ok && data.ok) {
+        setAiTestResult({
+          loading: false,
+          ok: true,
+          model: data.model,
+          provider: data.provider,
+          usingCustom: data.usingCustomKey,
+          msg: data.msg || `Verified! Response received from ${data.model}.`,
+        });
+      } else {
+        setAiTestResult({
+          loading: false,
+          ok: false,
+          msg: data.error || 'Connection failed. Please verify API key format.',
+        });
+      }
+    } catch (err: any) {
+      setAiTestResult({
+        loading: false,
+        ok: false,
+        msg: err.message || 'Network error while testing connection.',
+      });
+    }
+  };
 
   const showNotification = (msg: string) => {
     setNotification(msg);
@@ -283,6 +418,19 @@ export const AdminDashboardPage: React.FC = () => {
           >
             <Building className="w-4 h-4" />
             <span>Agency Settings</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('ai-settings')}
+            className={`pb-3 px-3 border-b-2 transition-colors flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'ai-settings'
+                ? 'border-emerald-800 text-emerald-900 font-bold'
+                : 'border-transparent text-stone-500 hover:text-stone-900'
+            }`}
+          >
+            <Bot className="w-4 h-4 text-emerald-700" />
+            <span>AI Settings & Key</span>
+            <span className="px-1.5 py-0.2 text-[10px] bg-emerald-100 text-emerald-800 rounded-full font-bold">AI</span>
           </button>
         </div>
 
@@ -770,6 +918,227 @@ export const AdminDashboardPage: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* TAB 4: AI SETTINGS & CUSTOM API KEY */}
+        {activeTab === 'ai-settings' && (
+          <div className="space-y-6">
+            {/* Overview Banner */}
+            <div className="bg-gradient-to-r from-emerald-950 via-teal-950 to-stone-950 text-white rounded-2xl p-6 sm:p-8 shadow-lg border border-emerald-900/60 relative overflow-hidden">
+              <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2.5 py-1 text-xs font-bold bg-amber-400 text-stone-950 rounded-full uppercase tracking-wider flex items-center gap-1">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      {aiConfig.hasCustomKey ? `${aiConfig.provider.toUpperCase()} ACTIVE` : 'Free Tier & Travel Knowledge'}
+                    </span>
+                    <span className="text-xs text-emerald-300 font-mono">
+                      {aiConfig.model || 'gemini-2.5-flash'}
+                    </span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">
+                    AI Travel Assistant & Smart Tour Localization
+                  </h2>
+                  <p className="text-xs sm:text-sm text-stone-300 max-w-2xl leading-relaxed">
+                    Powers the public travel concierge chatbot on all pages and the one-click tour auto-translation in the admin tour editor. Supports Google Gemini, Groq, and OpenAI keys with resilient offline travel knowledge fallback.
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-2.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleTestAiConnection}
+                    disabled={aiTestResult?.loading}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    <Cpu className={`w-4 h-4 ${aiTestResult?.loading ? 'animate-spin' : ''}`} />
+                    <span>{aiTestResult?.loading ? 'Testing Connection...' : 'Test AI Connection'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* AI Test Result Card */}
+            {aiTestResult && (
+              <div
+                className={`p-4 rounded-xl border flex items-start gap-3 animate-in fade-in text-xs sm:text-sm ${
+                  aiTestResult.ok
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                    : 'bg-red-50 border-red-200 text-red-900'
+                }`}
+              >
+                {aiTestResult.ok ? (
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                )}
+                <div>
+                  <div className="font-bold flex items-center gap-2">
+                    <span>{aiTestResult.ok ? 'Connection Verified' : 'Connection Error'}</span>
+                    {aiTestResult.usingCustom !== undefined && (
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-white font-bold border border-current">
+                        {aiTestResult.usingCustom ? `Using Custom Key (${aiTestResult.provider || 'AI'})` : 'Using Built-in Engine'}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1 leading-relaxed text-xs opacity-90">{aiTestResult.msg}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Dual Cards: Features Powered + Custom Key Settings */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Features List */}
+              <div className="lg:col-span-5 bg-white rounded-xl border border-stone-200 p-6 shadow-xs space-y-4">
+                <h3 className="font-bold text-base text-stone-900 flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-emerald-800" />
+                  <span>AI Powered Features</span>
+                </h3>
+
+                <div className="space-y-3.5 text-xs text-stone-600">
+                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-100 space-y-1">
+                    <div className="font-bold text-stone-900 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      <span>1. Customer AI Travel Concierge</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      Floating chatbot on all pages giving real-time advice on Sajek military convoys, packing, seasonal weather, and tour package details in Bangla or English.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-100 space-y-1">
+                    <div className="font-bold text-stone-900 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>2. One-Click Tour Auto-Translator</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      In the Tour Editor, translate all package titles, descriptions, inclusions, and all itinerary days between Bangla and English with 1 click.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-stone-50 rounded-lg border border-stone-100 space-y-1">
+                    <div className="font-bold text-stone-900 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-teal-600" />
+                      <span>3. Contextual Tour Inquiries</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      "Ask AI about this tour" buttons on tour detail pages pre-load the package specs into the concierge session.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Custom API Key Configuration */}
+              <div className="lg:col-span-7 bg-white rounded-xl border border-stone-200 p-6 shadow-xs space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+                  <div className="flex items-center gap-2">
+                    <Key className="w-5 h-5 text-emerald-800" />
+                    <h3 className="font-bold text-base text-stone-900">
+                      AI Provider & API Key Configuration
+                    </h3>
+                  </div>
+                  <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider font-mono">
+                    {aiConfig.hasCustomKey ? 'Custom Key Active' : 'Default Ready'}
+                  </span>
+                </div>
+
+                <div className="p-3.5 bg-amber-50 border border-amber-200/80 rounded-xl text-xs text-amber-900 space-y-1">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <Info className="w-4 h-4 text-amber-700" />
+                    <span>Free Tier Default & Custom Key Support</span>
+                  </div>
+                  <p className="text-[11px] text-amber-800/90 leading-relaxed">
+                    By default, Jatriq operates on the free tier with a built-in Bangladesh travel intelligence engine. You can enter any <strong>Google Gemini API Key</strong> (`AIza...`), <strong>Groq API Key</strong> (`gsk_...`), or <strong>OpenAI GPT Key</strong> (`sk-...`) below. It will be saved securely and used across the website.
+                  </p>
+                </div>
+
+                <form onSubmit={handleSaveCustomApiKey} className="space-y-4 text-xs sm:text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-stone-700 mb-1.5">
+                        AI Provider
+                      </label>
+                      <select
+                        value={selectedProvider}
+                        onChange={(e) => setSelectedProvider(e.target.value as any)}
+                        className="w-full py-2.5 px-3 text-xs sm:text-sm rounded-xl bg-stone-50 border border-stone-200 focus:outline-hidden focus:border-emerald-700 focus:bg-white transition-all"
+                      >
+                        <option value="auto">Auto-Detect from Key</option>
+                        <option value="gemini">Google Gemini (AIzaSy...)</option>
+                        <option value="groq">Groq (Ultra-Fast Free Tier)</option>
+                        <option value="openai">OpenAI (ChatGPT)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-stone-700 mb-1.5">
+                        Active Key Status
+                      </label>
+                      <div className="py-2.5 px-3 rounded-xl bg-stone-100 border border-stone-200 text-xs text-stone-700 flex items-center justify-between">
+                        <span className="font-mono">{aiConfig.maskedKey || 'Default Free Tier'}</span>
+                        <span className={`w-2.5 h-2.5 rounded-full ${aiConfig.hasCustomKey ? 'bg-emerald-500' : 'bg-amber-400'}`} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 mb-1.5">
+                      Enter / Update API Key
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showApiKey ? 'text' : 'password'}
+                        value={customApiKeyInput}
+                        onChange={(e) => setCustomApiKeyInput(e.target.value)}
+                        placeholder="Leave blank to use Default Free Tier (or paste AIzaSy..., gsk_..., sk-...)"
+                        className="w-full py-2.5 pl-3.5 pr-10 text-xs sm:text-sm rounded-xl bg-stone-50 border border-stone-200 font-mono focus:outline-hidden focus:border-emerald-700 focus:bg-white transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKey(!showApiKey)}
+                        className="absolute right-2.5 top-2.5 text-stone-400 hover:text-stone-700 p-1"
+                        title={showApiKey ? 'Hide API key' : 'Show API key'}
+                      >
+                        {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    <span className="text-[11px] text-stone-400 block mt-1">
+                      Saved to server config file and local storage. Immediately applied to customer chatbot and admin auto-translator.
+                    </span>
+                  </div>
+
+                  <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={handleClearCustomApiKey}
+                      disabled={isSavingKey}
+                      className="px-4 py-2 text-xs font-semibold text-stone-600 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      Revert to Free Tier
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleTestAiConnection}
+                        disabled={aiTestResult?.loading}
+                        className="px-4 py-2 text-xs font-semibold text-stone-700 bg-white border border-stone-300 hover:bg-stone-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        Test Key
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSavingKey}
+                        className="px-5 py-2 text-xs font-bold text-white bg-emerald-800 hover:bg-emerald-900 active:bg-emerald-950 rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50"
+                      >
+                        {isSavingKey ? 'Saving...' : 'Save API Key'}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         )}
       </main>

@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ShieldCheck, Heart, MapPin, Award, ArrowRight } from 'lucide-react';
 import { siteConfig } from '../config/siteConfig';
+import { resolveImageUrl, handleImageFallback } from '../lib/imageUtils';
 
 export const AboutPage: React.FC = () => {
   const { t, language } = useLanguage();
@@ -82,9 +83,10 @@ export const AboutPage: React.FC = () => {
 
         <div className="lg:col-span-5 aspect-4/3 rounded-2xl overflow-hidden shadow-xl border border-stone-200">
           <img
-            src="/src/assets/images/hero_sajek_sunrise_1791788897775.jpg"
+            src={resolveImageUrl('/images/hero_sajek_sunrise_1791788897775.jpg', 'sajek')}
             alt="Scenic Bangladesh Travel"
             referrerPolicy="no-referrer"
+            onError={(e) => handleImageFallback(e, 'sajek')}
             className="w-full h-full object-cover"
           />
         </div>

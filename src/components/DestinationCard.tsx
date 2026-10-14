@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Compass } from 'lucide-react';
 import { DestinationInfo } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { resolveImageUrl, handleImageFallback } from '../lib/imageUtils';
 
 interface DestinationCardProps {
   destination: DestinationInfo;
@@ -19,10 +20,15 @@ export const DestinationCard: React.FC<DestinationCardProps> = ({ destination })
     >
       {!imageError ? (
         <img
-          src={destination.image}
+          src={resolveImageUrl(destination.image)}
           alt={getText(destination.name)}
           referrerPolicy="no-referrer"
-          onError={() => setImageError(true)}
+          onError={(e) => {
+            handleImageFallback(e, 'sajek');
+            if (e.currentTarget.dataset.triedFallback === 'true') {
+              setImageError(true);
+            }
+          }}
           loading="lazy"
           className="w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
         />

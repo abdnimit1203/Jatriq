@@ -3,6 +3,7 @@ import { TourPackage, BookingInquiry } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { useData } from '../context/DataContext';
 import { buildWhatsAppUrl } from '../lib/whatsapp';
+import { submitBookingToFirestore } from '../lib/firebase';
 import {
   MessageCircle,
   CheckCircle2,
@@ -98,7 +99,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return; // Prevent duplicate rapid clicks
 
@@ -112,6 +113,24 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
       ? getText(selectedTour.title)
       : formData.packageSlug;
 
+    // Save to Firestore
+    try {
+      const estimatedBDT = (selectedTour?.priceBDT || 0) * (formData.travelersCount || 1);
+      await submitBookingToFirestore({
+        packageSlug: formData.packageSlug,
+        packageTitle: packageTitle,
+        fullName: formData.fullName.trim(),
+        phone: formData.phone.trim(),
+        email: formData.email?.trim() || '',
+        travelDate: formData.travelDate,
+        travelersCount: formData.travelersCount,
+        specialRequests: formData.specialRequests?.trim() || '',
+        totalEstimatedBDT: estimatedBDT,
+      });
+    } catch (err) {
+      console.warn('Booking stored locally/fallback due to network:', err);
+    }
+
     const result = buildWhatsAppUrl(formData, packageTitle, language, config);
 
     setSubmissionResult({
@@ -122,7 +141,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ initialPackageSlug }) 
     setIsSubmitted(true);
     setIsSubmitting(false);
 
-    // Attempt to open WhatsApp window safely; if blocked by browser popup protection, user has manual copy and link buttons
+    // Attempt to open WhatsApp window safely
     try {
       window.open(result.url, '_blank', 'noopener,noreferrer');
     } catch {

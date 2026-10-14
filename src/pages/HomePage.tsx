@@ -17,6 +17,7 @@ import { TourPackageCard } from '../components/TourPackageCard';
 import { DestinationCard } from '../components/DestinationCard';
 import { TestimonialCard } from '../components/TestimonialCard';
 import { SectionHeading } from '../components/SectionHeading';
+import { resolveImageUrl, handleImageFallback } from '../lib/imageUtils';
 
 export const HomePage: React.FC = () => {
   const { t, getText, formatNumber, language } = useLanguage();
@@ -42,10 +43,11 @@ export const HomePage: React.FC = () => {
         {/* Full-bleed photography */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/src/assets/images/hero_sajek_sunrise_1791788897775.jpg"
+            src={resolveImageUrl('/images/hero_sajek_sunrise_1791788897775.jpg', 'sajek')}
             alt="Misty sunrise over Sajek Valley Bangladesh"
             referrerPolicy="no-referrer"
             fetchPriority="high"
+            onError={(e) => handleImageFallback(e, 'sajek')}
             className="w-full h-full object-cover object-center scale-102 transition-transform duration-1000 ease-out"
           />
           {/* Measured multi-layer contrast scrim for WCAG AA readability */}
