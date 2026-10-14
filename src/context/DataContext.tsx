@@ -14,6 +14,15 @@ import {
 
 const PACKAGES_STORAGE_KEY = 'jatriq_managed_packages';
 const CONFIG_STORAGE_KEY = 'jatriq_managed_site_config';
+const CATEGORIES_STORAGE_KEY = 'jatriq_managed_categories';
+
+const DEFAULT_CATEGORIES = [
+  'hill-tracts',
+  'beach',
+  'tea-gardens',
+  'wildlife',
+  'island',
+];
 
 const normalizePackage = (pkg: TourPackage): TourPackage => ({
   ...pkg,
@@ -28,11 +37,13 @@ interface DataContextType {
   config: SiteConfig;
   isFirebaseActive: boolean;
   categories: string[];
+  lastDataError: string | null;
+  clearDataError: () => void;
   addCategory: (cat: string) => void;
   deleteCategory: (cat: string) => void;
-  addPackage: (pkg: TourPackage) => Promise<void>;
-  updatePackage: (pkg: TourPackage) => Promise<void>;
-  deletePackage: (id: string) => Promise<void>;
+  addPackage: (pkg: TourPackage) => Promise<{ success: boolean; error?: string }>;
+  updatePackage: (pkg: TourPackage) => Promise<{ success: boolean; error?: string }>;
+  deletePackage: (id: string) => Promise<{ success: boolean; error?: string }>;
   toggleFeatured: (id: string) => Promise<void>;
   importPackages: (imported: TourPackage[]) => Promise<{ success: boolean; count?: number; error?: string }>;
   resetPackagesToDefault: () => void;
@@ -100,6 +111,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubConfig = subscribeToSiteConfig((cloudConfig) => {
       if (cloudConfig && cloudConfig.agencyName) {
         setConfig(cloudConfig);
+        if (Array.isArray(cloudConfig.categories) && cloudConfig.categories.length > 0) {
+          setCategories(cloudConfig.categories);
+        }
         setIsFirebaseActive(true);
       }
     });
@@ -128,35 +142,54 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [config]);
 
-  const addPackage = async (pkg: TourPackage) => {
+  const [lastDataError, setLastDataError] = useState<string | null>(null);
+
+  const clearDataError = () => setLastDataError(null);
+
+  const addPackage = async (pkg: TourPackage): Promise<{ success: boolean; error?: string }> => {
     const normalized = normalizePackage(pkg);
     setPackages((prev) => [normalized, ...prev]);
+    clearDataError();
     try {
       await savePackageToFirestore(normalized);
       setIsFirebaseActive(true);
-    } catch (err) {
+      return { success: true };
+    } catch (err: any) {
       console.warn('Firestore write note:', err);
+      const errMsg = err.message || 'Failed to sync package to Firestore cloud.';
+      setLastDataError(errMsg);
+      return { success: false, error: errMsg };
     }
   };
 
-  const updatePackage = async (updated: TourPackage) => {
+  const updatePackage = async (updated: TourPackage): Promise<{ success: boolean; error?: string }> => {
     const normalized = normalizePackage(updated);
     setPackages((prev) => prev.map((p) => (p.id === normalized.id ? normalized : p)));
+    clearDataError();
     try {
       await savePackageToFirestore(normalized);
       setIsFirebaseActive(true);
-    } catch (err) {
+      return { success: true };
+    } catch (err: any) {
       console.warn('Firestore write note:', err);
+      const errMsg = err.message || 'Failed to update package in Firestore cloud.';
+      setLastDataError(errMsg);
+      return { success: false, error: errMsg };
     }
   };
 
-  const deletePackage = async (id: string) => {
+  const deletePackage = async (id: string): Promise<{ success: boolean; error?: string }> => {
     setPackages((prev) => prev.filter((p) => p.id !== id));
+    clearDataError();
     try {
       await deletePackageFromFirestore(id);
       setIsFirebaseActive(true);
-    } catch (err) {
+      return { success: true };
+    } catch (err: any) {
       console.warn('Firestore delete note:', err);
+      const errMsg = err.message || 'Failed to delete package from Firestore cloud.';
+      setLastDataError(errMsg);
+      return { success: false, error: errMsg };
     }
   };
 
@@ -224,23 +257,51 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: true, count };
   };
 
-  const [categories, setCategories] = useState<string[]>([
-    'hill-tracts',
-    'beach',
-    'tea-gardens',
-    'wildlife',
-    'island',
-  ]);
+  const [categories, setCategories] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem(CATEGORIES_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return DEFAULT_CATEGORIES;
+  });
 
-  const addCategory = (cat: string) => {
+  // Save categories to localStorage for persistent offline availability
+  useEffect(() => {
+    try {
+      localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+    } catch (err) {
+      console.warn('Failed to save categories to localStorage:', err);
+    }
+  }, [categories]);
+
+  const addCategory = async (cat: string) => {
     const slug = cat.toLowerCase().trim().replace(/\s+/g, '-');
     if (slug && !categories.includes(slug)) {
-      setCategories((prev) => [...prev, slug]);
+      const updated = [...categories, slug];
+      setCategories(updated);
+      try {
+        await saveSiteConfigToFirestore({ ...config, categories: updated });
+      } catch (err) {
+        console.warn('Firestore category sync note:', err);
+      }
     }
   };
 
-  const deleteCategory = (cat: string) => {
-    setCategories((prev) => prev.filter((c) => c !== cat));
+  const deleteCategory = async (cat: string) => {
+    const updated = categories.filter((c) => c !== cat);
+    setCategories(updated);
+    try {
+      await saveSiteConfigToFirestore({ ...config, categories: updated });
+    } catch (err) {
+      console.warn('Firestore category delete sync note:', err);
+    }
   };
 
   return (
@@ -250,6 +311,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         config,
         isFirebaseActive,
         categories,
+        lastDataError,
+        clearDataError,
         addCategory,
         deleteCategory,
         addPackage,

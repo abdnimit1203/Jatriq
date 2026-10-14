@@ -649,10 +649,18 @@ export const AdminPackageFormModal: React.FC<AdminPackageFormModalProps> = ({
                   <input
                     type="text"
                     required
+                    disabled={Boolean(packageToEdit)}
                     value={formData.id}
                     onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-                    className="w-full py-2 px-3 text-xs rounded-lg bg-stone-50 border border-stone-200"
+                    className={`w-full py-2 px-3 text-xs rounded-lg border border-stone-200 ${
+                      packageToEdit ? 'bg-stone-100 text-stone-500 cursor-not-allowed' : 'bg-stone-50'
+                    }`}
                   />
+                  {packageToEdit && (
+                    <span className="text-[10px] text-stone-400 mt-0.5 block">
+                      Package ID is immutable to preserve bookings and database links
+                    </span>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-stone-700 mb-1">

@@ -20,7 +20,14 @@ import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
  * Route guard that redirects unauthenticated users to /admin/login
  */
 const ProtectedAdminRoute: React.FC = () => {
-  const { isAuthenticated } = useAdminAuth();
+  const { isAuthenticated, authLoading } = useAdminAuth();
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-stone-100 flex items-center justify-center">
+        <div className="w-8 h-8 border-3 border-emerald-800 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
   }
@@ -31,7 +38,14 @@ const ProtectedAdminRoute: React.FC = () => {
  * Login route that redirects already authenticated users to /admin
  */
 const AdminLoginRoute: React.FC = () => {
-  const { isAuthenticated } = useAdminAuth();
+  const { isAuthenticated, authLoading } = useAdminAuth();
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-stone-100 flex items-center justify-center">
+        <div className="w-8 h-8 border-3 border-emerald-800 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
   if (isAuthenticated) {
     return <Navigate to="/admin" replace />;
   }

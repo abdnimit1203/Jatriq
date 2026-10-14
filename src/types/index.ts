@@ -107,4 +107,5 @@ export interface SiteConfig {
     enabled: boolean;
     text: BilingualText;
   };
+  categories?: string[];
 }

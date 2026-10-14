@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
+import { useData } from './DataContext';
 
 export interface ChatMessage {
   id: string;
@@ -39,6 +40,7 @@ const STORAGE_KEY_CUSTOM_API_KEY = 'jatriq_custom_gemini_api_key';
 
 export const AIAssistantProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { language } = useLanguage();
+  const { packages } = useData();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -209,6 +211,14 @@ export const AIAssistantProvider: React.FC<{ children: ReactNode }> = ({ childre
         headers['x-custom-api-key'] = customApiKey.trim();
       }
 
+      const packageCatalog = (packages || []).map((p) => ({
+        id: p.id,
+        title: p.title,
+        destination: p.destination,
+        duration: p.duration,
+        priceBDT: p.priceBDT,
+      }));
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers,
@@ -216,6 +226,7 @@ export const AIAssistantProvider: React.FC<{ children: ReactNode }> = ({ childre
           messages: newHistory.map((m) => ({ role: m.role, content: m.content })),
           tourContext: activeTourContext,
           userLanguage: language,
+          packageCatalog,
         }),
       });
 

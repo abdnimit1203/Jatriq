@@ -109,22 +109,24 @@ Core Capabilities & Language Handling:
    - Answer in clear, polite Bengali (বাংলা) or English according to user convenience.
 
 2. Destination & Package Existence Policy (CRITICAL):
-   - Jatriq Tour Operator currently HAS active scheduled tour packages for ONLY these 5 destinations:
+   - Jatriq Tour Operator currently HAS active scheduled tour packages for all 6 of these signature destinations:
      1. Sajek Valley (সাজেক ভ্যালি) — 3 Days / 2 Nights (~৳8,500)
      2. Cox's Bazar Beach (কক্সবাজার) — 3 Days / 2 Nights (~৳9,500) and Luxury Beach Retreat 4 Days / 3 Nights (~৳10,800)
      3. Sylhet & Sreemangal (সিলেট ও শ্রীমঙ্গল) — 3 Days / 2 Nights (~৳7,200)
      4. Sundarbans Mangrove Safari (সুন্দরবন) — 3 Days / 2 Nights (~৳13,500)
      5. Bandarban Hill Treks (বান্দরবান) — 3 Days / 2 Nights (~৳8,200)
-   - IF user asks about ANY destination NOT in this list (e.g. Kuakata, Saint Martin, Tanguar Haor, Kaptai Lake, Rangamati town, Chittagong, Rajshahi, etc.):
+     6. Saint Martin's Island (সেন্ট মার্টিন'স দ্বীপ) — 3 Days / 2 Nights (~৳9,200)
+   - IF user asks about ANY destination NOT in this list (e.g. Kuakata, Tanguar Haor, Kaptai Lake, Rangamati town, Chittagong, Rajshahi, etc.):
      - You MUST explicitly state that Jatriq does NOT currently have a regular scheduled group package for that destination.
      - State that we CAN arrange a customized private tour for their family or group upon request.
      - Direct them to message our WhatsApp (+880 1812-345678) for custom itineraries.
-     - Recommend our closest available packages (e.g., if asking for beach/Kuakata, recommend Cox's Bazar; if asking for hills/Rangamati, recommend Sajek Valley or Bandarban).
-   - IF user asks about an EXISTING destination (Sajek, Cox's Bazar, Sylhet, Sundarbans, Bandarban):
+     - Recommend our closest available packages (e.g., if asking for beach/Kuakata, recommend Cox's Bazar or Saint Martin; if asking for hills/Rangamati, recommend Sajek Valley or Bandarban).
+   - IF user asks about an EXISTING destination (Sajek, Cox's Bazar, Sylhet, Sundarbans, Bandarban, Saint Martin):
      - Enthusiastically confirm that we have dedicated packages available, mention highlights and price, and guide them to the Book Now page or WhatsApp.
 
 3. Logistics & Practical Guidance:
    - Sajek convoy timings (Dighinala to Sajek: 10:30 AM & 02:30 PM; Sajek to Dighinala: 10:00 AM & 02:00 PM).
+   - Saint Martin ship schedules (Teknaf to Saint Martin: 09:30 AM departure; Saint Martin return: 03:00 PM).
    - National ID card / birth certificate requirement for army checkpoints.
    - 4x4 Chander Gari, solar power, packing power banks, modest clothing.
 `;
@@ -138,14 +140,13 @@ function generateLocalKnowledgeReply(userText: string, lang: 'bn' | 'en', tourCo
   // If tourContext is provided, customize
   const tourName = tourContext ? (lang === 'bn' ? tourContext.title?.bn || tourContext.title?.en : tourContext.title?.en || tourContext.title?.bn) : '';
 
-  // 1. Destination NOT in our package catalog (e.g. Kuakata, Saint Martin, Tanguar Haor, Kaptai)
+  // 1. Destination NOT in our package catalog (e.g. Kuakata, Tanguar Haor, Kaptai)
   const isKuakata = query.includes('kuakata') || query.includes('কুয়াকাটা') || query.includes('কুয়াকাটা');
-  const isSaintMartin = query.includes('saint martin') || query.includes('saintmartin') || query.includes('st martin') || query.includes('সেন্টমার্টিন') || query.includes('সেন্ট মার্টিন');
   const isTanguar = query.includes('tanguar') || query.includes('টাঙ্গুয়ার') || query.includes('টাঙ্গুয়ার');
   const isKaptai = query.includes('kaptai') || query.includes('কাপ্তাই');
 
-  if (isKuakata || isSaintMartin || isTanguar || isKaptai) {
-    const destName = isKuakata ? 'কুয়াকাটা (Kuakata)' : isSaintMartin ? "সেন্ট মার্টিন'স দ্বীপ (Saint Martin's Island)" : isTanguar ? 'টাঙ্গুয়ার হাওর (Tanguar Haor)' : 'কাপ্তাই (Kaptai Lake)';
+  if (isKuakata || isTanguar || isKaptai) {
+    const destName = isKuakata ? 'কুয়াকাটা (Kuakata)' : isTanguar ? 'টাঙ্গুয়ার হাওর (Tanguar Haor)' : 'কাপ্তাই (Kaptai Lake)';
     if (lang === 'bn') {
       return `**প্যাকেজ সংক্রান্ত তথ্য:**
 দুঃখিত, বর্তমানে আমাদের **${destName}** গন্তব্যের জন্য কোনো নির্ধারিত নিয়মিত গ্রুপ প্যাকেজ চালু নেই।
@@ -155,6 +156,7 @@ function generateLocalKnowledgeReply(userText: string, lang: 'bn' | 'en', tourCo
 • এছাড়া আমাদের বর্তমানে চালু থাকা শীর্ষ প্যাকেজগুলো দেখতে পারেন:
   - 🌊 **কক্সবাজার সমুদ্র সৈকত** (৩ দিন / ২ রাত — ৳৯,৫০০)
   - ☁️ **সাজেক ভ্যালি মেঘের রাজ্য** (৩ দিন / ২ রাত — ৳৮,৫০০)
+  - 🏝️ **সেন্ট মার্টিন'স দ্বীপ** (৩ দিন / ২ রাত — ৳৯,২০০)
   - 🌿 **সিলেট ও শ্রীমঙ্গল চা বাগান** (৩ দিন / ২ রাত — ৳৭,২০০)
   - 🐅 **সুন্দরবন ম্যানগ্রোভ সাফারি** (৩ দিন / ২ রাত — ৳১৩,৫০০)
   - ⛰️ **বান্দরবান নীলগিরি ট্র্যাকিং** (৩ দিন / ২ রাত — ৳৮,২০০)`;
@@ -167,6 +169,7 @@ Currently, we do not have a scheduled regular group package for **${destName}**.
 • Alternatively, explore our top active tour packages:
   - 🌊 **Cox's Bazar Beach** (3 Days / 2 Nights — ৳9,500)
   - ☁️ **Sajek Valley Cloud Kingdom** (3 Days / 2 Nights — ৳8,500)
+  - 🏝️ **Saint Martin's Island** (3 Days / 2 Nights — ৳9,200)
   - 🌿 **Sylhet & Sreemangal Tea Estates** (3 Days / 2 Nights — ৳7,200)
   - 🐅 **Sundarbans Mangrove Safari** (3 Days / 2 Nights — ৳13,500)
   - ⛰️ **Bandarban Nilgiri Treks** (3 Days / 2 Nights — ৳8,200)`;
@@ -179,6 +182,14 @@ Currently, we do not have a scheduled regular group package for **${destName}**.
   const isAskingSylhet = query.includes('sylhet') || query.includes('sreemangal') || query.includes('সিলেট') || query.includes('শ্রীমঙ্গল') || query.includes('srimangal') || query.includes('ratargul');
   const isAskingSundarban = query.includes('sundarban') || query.includes('shundorbon') || query.includes('সুন্দরবন') || query.includes('sundorban');
   const isAskingBandarban = query.includes('bandarban') || query.includes('বান্দরবান') || query.includes('nilgiri') || query.includes('নীলগিরি');
+  const isAskingSaintMartin =
+    query.includes('saint martin') ||
+    query.includes('saintmartin') ||
+    query.includes('st martin') ||
+    query.includes('সেন্টমার্টিন') ||
+    query.includes('সেন্ট মার্টিন') ||
+    query.includes('chhera dwip') ||
+    query.includes('ছেঁড়াদ্বীপ');
   const isAskingPackage = query.includes('package') || query.includes('প্যাকেজ') || query.includes('price') || query.includes('dam') || query.includes('koto') || query.includes('ache') || query.includes('ase') || query.includes('cost') || query.includes('taka') || query.includes('টাকা') || query.includes('খরচ') || query.includes('khoroch') || query.includes('jaoyar') || query.includes('jabo');
   const isAskingFamily = query.includes('family') || query.includes('পরিবার') || query.includes('kids') || query.includes('bachha') || query.includes('parents');
   const isGeneralHelp = query.includes('help') || query.includes('সাহায্য') || query.includes('ki ki') || query.includes('ki ache') || query.includes('list');
@@ -260,6 +271,22 @@ Currently, we do not have a scheduled regular group package for **${destName}**.
 • **Price:** ৳8,200 per person
 • **Includes:** Reserved 4x4 Chander Gari, entry to Nilgiri, Nilachal, Shailaprapad, Golden Temple, scenic hilltop cottage, and local meals.
 • **WhatsApp:** **+880 1812-345678**.`;
+    }
+  }
+
+  if (isAskingPackage && isAskingSaintMartin) {
+    if (lang === 'bn') {
+      return `**হ্যাঁ, আমাদের সেন্ট মার্টিন'স দ্বীপ স্পেশাল প্যাকেজ চালু রয়েছে!**
+• **প্যাকেজ:** সেন্ট মার্টিন'স কোরাল দ্বীপ ও ব্লু ওয়াটার অবকাশ (৩ দিন / ২ রাত)
+• **মূল্য:** ৳৯,২০০ প্রতি জন
+• **অন্তর্ভুক্ত:** ঢাকা-টেকনাফ রিটার্ন হাইওয়ে বাস, বিলাসবহুল শিপ টিকিট (কেয়ারি সিন্দাবাদ/গ্রিনলাইন), বিচ ভিউ রিসোর্টে রাত্রিযাপন, সব বেলার খাবার ও বার-বি-কিউ, ছেঁড়াদ্বীপ ভ্রমণ ও সার্বক্ষণিক গাইড।
+• **বুকিং:** ওয়েবসাইট থেকে সরাসরি 'Book Now' করুন অথবা হোয়াটসঅ্যাপে জানান: **+880 1812-345678**।`;
+    } else {
+      return `**Yes, our Saint Martin's Island Tour Package is active!**
+• **Package:** Saint Martin's Island Coral Island & Blue Water Getaway (3 Days / 2 Nights)
+• **Price:** ৳9,200 per person
+• **Includes:** Return highway coach, sea cruise ship tickets, beachfront resort stay, all meals with fresh seafood BBQ, Chhera Dwip excursion, and licensed guide.
+• **Book Now:** Click 'Book Now' on the tour page or message on WhatsApp: **+880 1812-345678**.`;
     }
   }
 
@@ -407,6 +434,44 @@ async function callOpenAICompatible(
 }
 
 /**
+ * Sanitize message history for Google GenAI SDK:
+ * 1. Discard any leading 'model' turns so conversation starts with 'user'.
+ * 2. Ensure turns alternate strictly between 'user' and 'model'.
+ */
+function sanitizeGeminiContents(messages: Array<{ role: string; content: string }>) {
+  const raw = (messages || [])
+    .filter((m) => m && typeof m.content === 'string' && m.content.trim().length > 0)
+    .map((m) => ({
+      role: m.role === 'assistant' || m.role === 'model' ? 'model' : 'user',
+      parts: [{ text: m.content.trim() }],
+    }));
+
+  // Discard any leading model turns (such as welcome messages)
+  while (raw.length > 0 && raw[0].role === 'model') {
+    raw.shift();
+  }
+
+  if (raw.length === 0) {
+    return [];
+  }
+
+  // Ensure strict alternating turns
+  const sanitized: Array<{ role: string; parts: Array<{ text: string }> }> = [];
+  for (const turn of raw) {
+    if (sanitized.length > 0 && sanitized[sanitized.length - 1].role === turn.role) {
+      sanitized[sanitized.length - 1].parts[0].text += `\n\n${turn.parts[0].text}`;
+    } else {
+      sanitized.push({
+        role: turn.role,
+        parts: [{ text: turn.parts[0].text }],
+      });
+    }
+  }
+
+  return sanitized;
+}
+
+/**
  * Call Gemini API using @google/genai SDK
  */
 async function callGemini(
@@ -424,10 +489,10 @@ async function callGemini(
     },
   });
 
-  const contents = messages.map((m) => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.content }],
-  }));
+  const contents = sanitizeGeminiContents(messages);
+  if (contents.length === 0) {
+    return '';
+  }
 
   // Try configured model, fallback to gemini-2.5-flash
   const primaryModel = model || 'gemini-2.5-flash';
@@ -572,7 +637,7 @@ app.get('/api/test-key', async (req: Request, res: Response) => {
 
 // POST /api/chat
 app.post('/api/chat', async (req: Request, res: Response) => {
-  const { messages, tourContext, userLanguage } = req.body;
+  const { messages, tourContext, userLanguage, packageCatalog } = req.body;
   const customKeyHeader = req.headers['x-custom-api-key'] as string | undefined;
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -585,6 +650,15 @@ app.post('/api/chat', async (req: Request, res: Response) => {
   let systemPrompt = AI_CONCIERGE_SYSTEM_PROMPT;
   if (tourContext) {
     systemPrompt += `\n\nCURRENT TOUR IN FOCUS:\n${JSON.stringify(tourContext, null, 2)}\nWhen answering questions about this tour, prioritize accurate details from this package.`;
+  }
+  if (Array.isArray(packageCatalog) && packageCatalog.length > 0) {
+    const catalogSummary = packageCatalog
+      .map(
+        (p: any) =>
+          `• ${p.title?.en || p.title?.bn || p.id} | Destination: ${p.destination?.en || p.destination?.bn} | Duration: ${p.duration?.text?.en || p.duration?.text?.bn || `${p.duration?.days}D/${p.duration?.nights}N`} | Price: ৳${p.priceBDT}`
+      )
+      .join('\n');
+    systemPrompt += `\n\nCURRENT ACTIVE TOUR PACKAGES IN SYSTEM:\n${catalogSummary}\nPrioritize these real-time prices, durations, and titles when answering tour inquiries.`;
   }
   if (userLanguage) {
     systemPrompt += `\nUser preferred language: ${userLanguage === 'bn' ? 'Bangla (বাংলা)' : 'English'}.`;
@@ -760,7 +834,11 @@ async function startServer() {
   });
 }
 
-startServer().catch((err) => {
-  console.error('Error starting server:', err);
-  process.exit(1);
-});
+export { app };
+
+if (!process.env.VERCEL) {
+  startServer().catch((err) => {
+    console.error('Error starting server:', err);
+    process.exit(1);
+  });
+}

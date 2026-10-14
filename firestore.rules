@@ -1,33 +1,65 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper: Verify that a document exists and has active admin credentials
+    function isActiveAdminDoc(adminPath) {
+      return exists(adminPath) &&
+        get(adminPath).data.role == 'admin' &&
+        get(adminPath).data.active == true;
+    }
+
+    // Helper: Determine if the requesting user is an authorized administrator
+    // Checks:
+    // 1. Firebase Auth custom claim `admin == true`
+    // 2. Email-based document in /admins/{email} with role == 'admin' and active == true
+    // 3. UID-based document in /admins/{uid} with role == 'admin' and active == true
+    function isAdmin() {
+      return request.auth != null && (
+        (request.auth.token.keys().hasAny(['admin']) && request.auth.token.admin == true) ||
+        (request.auth.token.keys().hasAny(['email']) && 
+         isActiveAdminDoc(/databases/$(database)/documents/admins/$(request.auth.token.email))) ||
+        isActiveAdminDoc(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
     // Default-deny catch-all
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Packages: Public can view, only admin can update
+    // Admins registry: only readable by authorized admins; writes restricted to Firebase Console / Admin SDK
+    match /admins/{adminId} {
+      allow read: if request.auth != null && (
+        request.auth.uid == adminId ||
+        (request.auth.token.keys().hasAny(['email']) && request.auth.token.email == adminId) ||
+        isAdmin()
+      );
+      allow write: if false;
+    }
+
+    // Packages: Public travelers can view; only authorized admins can create, update, or delete
     match /packages/{packageId} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.email_verified == true; // Simplified for now
+      allow write: if isAdmin();
     }
 
-    // Site configuration
+    // Site configuration: Public can view; only authorized admins can update
     match /site_config/{configId} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.email_verified == true;
+      allow write: if isAdmin();
     }
 
-    // Bookings
+    // Bookings: Public travelers can submit bookings; only authorized admins can view, update, or delete
     match /bookings/{bookingId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
     }
 
-    // Inquiries
+    // Inquiries: Public travelers can submit contact inquiries; only authorized admins can view, update, or delete
     match /inquiries/{inquiryId} {
-      allow read: if request.auth != null;
-      allow write: if true;
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
     }
   }
 }

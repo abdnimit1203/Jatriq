@@ -1,5 +1,15 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User,
+} from 'firebase/auth';
+import {
   getFirestore,
   collection,
   doc,
@@ -27,6 +37,31 @@ const resolvedConfig = {
 const app = !getApps().length ? initializeApp(resolvedConfig) : getApp();
 
 export const db = getFirestore(app);
+export const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+
+export async function signInWithGooglePopup(): Promise<User> {
+  const result = await signInWithPopup(auth, googleProvider);
+  return result.user;
+}
+
+export async function loginWithEmail(email: string, pass: string): Promise<User> {
+  const result = await signInWithEmailAndPassword(auth, email, pass);
+  return result.user;
+}
+
+export async function registerWithEmail(email: string, pass: string): Promise<User> {
+  const result = await createUserWithEmailAndPassword(auth, email, pass);
+  return result.user;
+}
+
+export async function signOutFromFirebase(): Promise<void> {
+  await signOut(auth);
+}
+
+export function onAuthChange(callback: (user: User | null) => void): Unsubscribe {
+  return onAuthStateChanged(auth, callback);
+}
 
 export interface FirestoreBooking {
   id: string;
@@ -58,6 +93,8 @@ export function subscribeToPackages(onUpdate: (packages: TourPackage[]) => void)
             cloudPackages.push(docSnap.data() as TourPackage);
           });
           onUpdate(cloudPackages);
+        } else {
+          onUpdate([]);
         }
       },
       (error) => {
